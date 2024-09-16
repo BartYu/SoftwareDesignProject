@@ -1,0 +1,64 @@
+.addUser {
+  font-family: "Open Sans", sans-serif;
+  width: 25%;
+  margin: 50px;
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+.addUser h3 {
+  text-align: center;
+  font-weight: bold;
+  color: darkcyan;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.addUserForm .inputGroup {
+  width: 100%;
+  flex-direction: column;
+}
+
+.addUserForm .inputGroup label {
+  font-size: 14px;
+}
+
+.addUserForm select {
+  font-size: 14px;
+}
+
+.addUserForm .inputGroup input {
+  padding-left: 8px;
+}
+
+.addUserForm .inputGroup :placeholder-shown {
+  font-style: italic;
+  padding-left: 8px;
+}
+
+.addUserForm .password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.addUserForm .password-container input {
+  width: 100%;
+  padding-right: 2.5rem;
+}
+
+.addUserForm .password-container i {
+  position: absolute;
+  right: 0.5rem;
+  top: 22%;
+  cursor: pointer;
+}
+
+.addUserForm .inputGroup button {
+  margin-top: 15px;
+  font-size: 1.3rem;
+}
+.addUser .logincheck {
+  font-size: 90%;
+  margin-top: 5%;
+}

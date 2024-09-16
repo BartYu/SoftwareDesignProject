@@ -1,4 +1,4 @@
-import Signup from "./components/Signup";
+import Register from "./components/Register";
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Login from "./components/Login";
@@ -7,7 +7,7 @@ function App() {
   const route = createBrowserRouter([
     {
       path: "/",
-      element: <Signup />,
+      element: <Register />,
     },
     {
       path: "/login",
