@@ -1,34 +1,40 @@
 import "./login.css";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 function Login() {
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   // const [error, setError] = useState("");
 
   // const handleSubmission = (event) => {
   //   event.preventDefault();
   // };
+  const loginCheck = "Not registered? ";
 
   return (
     <div className="addUser">
       <h3> Log In</h3>
       <form className="addUserForm">
         <div className="inputGroup">
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">Username</label>
           <input
             type="email"
             id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             autoComplete="off"
-            placeholder="Enter your Email"
+            placeholder="Email"
             required
           />
           <label htmlFor="name">Password:</label>
           <input
             type="password"
             id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             autoComplete="off"
-            placeholder="Enter password"
+            placeholder="Password"
             required
           />
           <button type="submit" class="btn btn-primary">
@@ -37,10 +43,12 @@ function Login() {
         </div>
       </form>
       <div className="logincheck">
-        <p> Not registered? </p>
-        <Link to="/" type="button" class="btn btn-success">
-          Register
-        </Link>
+        <p>
+          {loginCheck}
+          <Link to="/" class="register-link">
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );
