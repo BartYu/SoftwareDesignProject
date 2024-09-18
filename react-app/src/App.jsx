@@ -1,8 +1,7 @@
 import Register from "./components/Register";
-import Login from "./components/Login";
-import Profile from "./components/Profile";
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Login from "./components/Login";
 
 function App() {
   const route = createBrowserRouter([
@@ -13,10 +12,6 @@ function App() {
     {
       path: "/login",
       element: <Login />,
-    },
-    {
-      path: "/profile",
-      element: <Profile />,
     },
   ]);
 
