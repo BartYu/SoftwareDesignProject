@@ -30,13 +30,13 @@ const Profile = () => {
       <form className="row g-3 needs-validation" noValidate>
         {/* Name */}
         <div className="col-md-6">
-          <label htmlFor="fullname" className="form-label">
+          <label for="validationCustom01" className="form-label">
             Full Name
           </label>
           <input
             type="text"
             className="form-control"
-            id="fullname"
+            id="validationCustom01"
             maxLength="50"
             required
           />
@@ -46,13 +46,13 @@ const Profile = () => {
         </div>
         {/* Address 1 */}
         <div className="col-md-6">
-          <label htmlFor="address1" className="form-label">
+          <label for="validationCustom03" className="form-label">
             Address 1
           </label>
           <input
             type="text"
             className="form-control"
-            id="address1"
+            id="validationCustom03"
             maxLength="100"
             required
           />
@@ -74,13 +74,13 @@ const Profile = () => {
         </div>
         {/* City */}
         <div className="col-md-6">
-          <label htmlFor="city" className="form-label">
+          <label for="validationCustom04" className="form-label">
             City
           </label>
           <input
             type="text"
             className="form-control"
-            id="city"
+            id="validationCustom04"
             maxLength="100"
             required
           />
@@ -88,10 +88,10 @@ const Profile = () => {
         </div>
         {/* State */}
         <div className="col-md-3">
-          <label htmlFor="state" className="form-label">
+          <label for="validationCustom05" className="form-label">
             State
           </label>
-          <select className="form-select" id="state" required>
+          <select className="form-select" id="validationCustom05" required>
             <option selected disabled value="">
               Choose...
             </option>
@@ -100,30 +100,32 @@ const Profile = () => {
         </div>
         {/* Zip code */}
         <div className="col-md-3">
-          <label htmlFor="zip" className="form-label">
+          <label for="validationCustom06" className="form-label">
             Zip code
           </label>
           <input
             type="text"
             className="form-control"
-            id="zip"
+            id="validationCustom06"
             pattern="\d{5}"
             title="Invalid zip code"
             maxLength="9"
             required
           />
-          <div className="invalid-feedback">
-            Please provide a valid zip code.
-          </div>
+          <div className="invalid-feedback">Please provide a valid zip.</div>
         </div>
         {/* Skills Selections */}
         <div className="col-md-6">
-          <label htmlFor="skills"> Skills: </label>
+          <label for="validationCustom07" className="form-label">
+            Skills:
+          </label>
           <Select
+            id="validationCustom07"
             options={skillOptions}
             value={skills}
             isMulti={true}
             onChange={handleSkillsChange}
+            required
           ></Select>
           <div className="invalid-feedback">
             Please select at least one skill.
@@ -150,13 +152,14 @@ const Profile = () => {
             mode="multiple"
             value={selectedDates}
             onChange={handleDateChange}
+            required
           />
           <div className="invalid-feedback">
             Please select your availability dates.
           </div>
         </div>
         <div className="col-12">
-          <button className="btn btn-primary" type="submit">
+          <button type="Submit" className="btn btn-primary">
             Save
           </button>
         </div>
