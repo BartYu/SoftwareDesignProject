@@ -57,10 +57,13 @@ function Register() {
             onChange={(e) => setRole(e.target.value)}
             required
           >
-            <option value="">--Select--</option> {/* Placeholder option */}
+            <option selected disabled value="">
+              --Select--
+            </option>
             <option value="Admin">Admin</option>
             <option value="Volunteer">Volunteer</option>
           </select>
+
           <button type="Submit" className="btn btn-success">
             Sign Up
           </button>
