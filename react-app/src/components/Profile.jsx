@@ -2,10 +2,19 @@ import "./Profile.css";
 import { useState } from "react";
 import DatePicker from "react-multi-date-picker";
 import Select from "react-select";
+import { usStates } from "./states";
 
 const Profile = () => {
   const [selectedDates, setSelectedDates] = useState([]);
+  const [selectedState, setSelectedState] = useState("");
   const [skills, setSkills] = useState([]);
+  const [fullName, setFullName] = useState("");
+  const [address1, setAddress1] = useState("");
+  const [address2, setAddress2] = useState("");
+  const [city, setCity] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [preferences, setPreferences] = useState("");
+
   const skillOptions = [
     { value: "Adaptive", label: "Adaptive" },
     { value: "Creative", label: "Creative" },
@@ -16,50 +25,120 @@ const Profile = () => {
     { value: "Communication", label: "Communication" },
     { value: "Leadership", label: "Leadership" },
   ];
-  const handleSkillsChange = (skills) => {
-    setSkills(skills);
-  };
 
-  const handleDateChange = (dates) => {
-    setSelectedDates(dates);
+  // Error states
+  const [fullNameError, setFullNameError] = useState("");
+  const [address1Error, setAddress1Error] = useState("");
+  const [cityError, setCityError] = useState("");
+  const [stateError, setStateError] = useState("");
+  const [zipCodeError, setZipCodeError] = useState("");
+  const [skillsError, setSkillsError] = useState("");
+  const [datesError, setDatesError] = useState("");
+
+  const handleSubmission = (event) => {
+    event.preventDefault();
+
+    // console.log({
+    //   fullName,
+    //   address1,
+    //   city,
+    //   selectedState,
+    //   zipCode,
+    //   skills,
+    //   selectedDates,
+    // });
+
+    // Reset error messages
+    setFullNameError("");
+    setAddress1Error("");
+    setCityError("");
+    setStateError("");
+    setZipCodeError("");
+    setSkillsError("");
+    setDatesError("");
+
+    let hasError = false;
+
+    // Validate fields
+    if (!fullName) {
+      setFullNameError("Please enter your full name.");
+      hasError = true;
+    }
+    if (!address1) {
+      setAddress1Error("Please enter your address.");
+      hasError = true;
+    }
+    if (!city) {
+      setCityError("Please enter your city.");
+      hasError = true;
+    }
+    if (!selectedState) {
+      setStateError("Please select a state.");
+      hasError = true;
+    }
+    if (!zipCode) {
+      setZipCodeError("Please enter a zip code.");
+      hasError = true;
+    }
+    if (skills.length === 0) {
+      setSkillsError("Please select at least one skill.");
+      hasError = true;
+    }
+    if (selectedDates.length === 0) {
+      setDatesError("Please select your availability dates.");
+      hasError = true;
+    }
+
+    if (!hasError) {
+      // Proceed with form submission logic
+      alert("Profile saved successfully!");
+    }
   };
 
   return (
     <div className="userProfile">
       <h3>Profile Page</h3>
-      <form className="row g-3 needs-validation" noValidate>
-        {/* Name */}
+      <form
+        className="row g-3 needs-validation"
+        noValidate
+        onSubmit={handleSubmission}
+      >
+        {/* Full Name */}
         <div className="col-md-6">
-          <label for="validationCustom01" className="form-label">
+          <label htmlFor="name" className="form-label">
             Full Name
           </label>
           <input
             type="text"
-            className="form-control"
-            id="validationCustom01"
+            id="name"
             maxLength="50"
-            required
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            className={`form-control ${fullNameError ? "is-invalid" : ""}`}
           />
-          <div className="invalid-feedback">
-            Please provide a valid full name.
-          </div>
+          {fullNameError && (
+            <div className="invalid-feedback">{fullNameError}</div>
+          )}
         </div>
+
         {/* Address 1 */}
         <div className="col-md-6">
-          <label for="validationCustom03" className="form-label">
+          <label htmlFor="address1" className="form-label">
             Address 1
           </label>
           <input
             type="text"
-            className="form-control"
-            id="validationCustom03"
+            id="address1"
             maxLength="100"
-            required
+            value={address1}
+            onChange={(e) => setAddress1(e.target.value)}
+            className={`form-control ${address1Error ? "is-invalid" : ""}`}
           />
-          <div className="invalid-feedback">
-            Please provide a valid address.
-          </div>
+          {address1Error && (
+            <div className="invalid-feedback">{address1Error}</div>
+          )}
         </div>
+
         {/* Address 2 */}
         <div className="col-md-6">
           <label htmlFor="address2" className="form-label">
@@ -70,67 +149,86 @@ const Profile = () => {
             className="form-control"
             id="address2"
             maxLength="100"
+            value={address2}
+            onChange={(e) => setAddress2(e.target.value)}
           />
         </div>
+
         {/* City */}
         <div className="col-md-6">
-          <label for="validationCustom04" className="form-label">
+          <label htmlFor="city" className="form-label">
             City
           </label>
           <input
             type="text"
-            className="form-control"
-            id="validationCustom04"
+            id="city"
             maxLength="100"
-            required
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className={`form-control ${cityError ? "is-invalid" : ""}`}
           />
-          <div className="invalid-feedback">Please provide a valid city.</div>
+          {cityError && <div className="invalid-feedback">{cityError}</div>}
         </div>
+
         {/* State */}
         <div className="col-md-3">
-          <label for="validationCustom05" className="form-label">
+          <label htmlFor="state" className="form-label">
             State
           </label>
-          <select className="form-select" id="validationCustom05" required>
-            <option selected disabled value="">
-              Choose...
+          <select
+            id="state"
+            value={selectedState}
+            onChange={(e) => setSelectedState(e.target.value)}
+            className={`form-select ${stateError ? "is-invalid" : ""}`}
+          >
+            <option disabled value="">
+              ...
             </option>
+            {usStates.map((state) => (
+              <option key={state.abbreviation} value={state.abbreviation}>
+                {state.name}
+              </option>
+            ))}
           </select>
-          <div className="invalid-feedback">Please select a state.</div>
+          {stateError && <div className="invalid-feedback">{stateError}</div>}
         </div>
-        {/* Zip code */}
+
+        {/* Zip Code */}
         <div className="col-md-3">
-          <label for="validationCustom06" className="form-label">
+          <label htmlFor="zip" className="form-label">
             Zip code
           </label>
           <input
             type="text"
-            className="form-control"
-            id="validationCustom06"
-            pattern="\d{5}"
+            id="zip"
+            pattern="\d{5}(-\d{4})?"
             title="Invalid zip code"
-            maxLength="9"
-            required
+            maxLength="10"
+            value={zipCode}
+            onChange={(e) => setZipCode(e.target.value)}
+            className={`form-control ${zipCodeError ? "is-invalid" : ""}`}
           />
-          <div className="invalid-feedback">Please provide a valid zip.</div>
+          {zipCodeError && (
+            <div className="invalid-feedback">{zipCodeError}</div>
+          )}
         </div>
-        {/* Skills Selections */}
+
+        {/* Skills Selection */}
         <div className="col-md-6">
-          <label for="validationCustom07" className="form-label">
-            Skills:
+          <label htmlFor="skills" className="form-label">
+            Skills
           </label>
           <Select
-            id="validationCustom07"
+            id="skills"
             options={skillOptions}
             value={skills}
-            isMulti={true}
-            onChange={handleSkillsChange}
-            required
-          ></Select>
-          <div className="invalid-feedback">
-            Please select at least one skill.
-          </div>
+            isMulti
+            onChange={(selectedOptions) => setSkills(selectedOptions || [])}
+            className={skillsError ? "is-invalid" : ""}
+          />
+          {skillsError && <div className="invalid-feedback">{skillsError}</div>}
         </div>
+
         {/* Preferences */}
         <div className="col-md-12">
           <label htmlFor="preferences" className="form-label">
@@ -140,26 +238,27 @@ const Profile = () => {
             className="form-control"
             id="preferences"
             rows="3"
+            value={preferences}
+            onChange={(e) => setPreferences(e.target.value)}
           ></textarea>
         </div>
-        {/* Date selection */}
+
+        {/* Date Selection */}
         <div className="col-md-6">
           <label htmlFor="date" className="form-label">
-            Availability (multiple dates allowed)
+            Dates available:
           </label>
           <DatePicker
             id="date"
             mode="multiple"
             value={selectedDates}
-            onChange={handleDateChange}
-            required
+            onChange={setSelectedDates}
           />
-          <div className="invalid-feedback">
-            Please select your availability dates.
-          </div>
+          {datesError && <div className="error-message">{datesError}</div>}
         </div>
+
         <div className="col-12">
-          <button type="Submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary">
             Save
           </button>
         </div>

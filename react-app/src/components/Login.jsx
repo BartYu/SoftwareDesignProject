@@ -10,16 +10,21 @@ function Login() {
 
   const handleSubmission = (event) => {
     event.preventDefault();
-    // if (password.length < 6) {
-    //   setError("Password must be at least 6 characters.");
-    // }
+    if (!email) {
+      setError("Please enter the correct email.");
+      return;
+    }
+    if (!password) {
+      setError("Please enter the correct password.");
+      return;
+    }
     navigate("/profile");
   };
   const loginCheck = "Not registered yet? ";
 
   return (
     <div className="addUser">
-      <h3> Log In</h3>
+      <h3> Welcome Back! </h3>
       <form className="addUserForm" onSubmit={handleSubmission}>
         <div className="inputGroup">
           <label htmlFor="email">Username</label>
@@ -30,8 +35,9 @@ function Login() {
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="off"
             placeholder="Email"
-            //required
+            className={`form-control ${error && !email ? "is-invalid" : ""}`}
           />
+          {!email && error && <div className="invalid-feedback">{error}</div>}
           <label htmlFor="name">Password:</label>
           <input
             type="password"
@@ -40,17 +46,20 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="off"
             placeholder="Password"
-            //required
+            className={`form-control ${error && !password ? "is-invalid" : ""}`}
           />
-          <button type="submit" class="btn btn-primary">
-            Login
+          {!password && error && (
+            <div className="invalid-feedback">{error}</div>
+          )}
+          <button type="submit" className="btn btn-primary">
+            LOGIN
           </button>
         </div>
       </form>
       <div className="logincheck">
         <p>
           {loginCheck}
-          <Link to="/" class="register-link">
+          <Link to="/" className="register-link">
             Register
           </Link>
         </p>

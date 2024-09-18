@@ -3,6 +3,9 @@
   width: 50%;
   margin: 50px auto;
   padding: 40px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: rgb(211, 223, 233);
 }
 
 .userProfile h3 {
@@ -19,4 +22,9 @@
 
 .btn btn-secondary {
   size: 0cap;
+}
+
+.error-message {
+  color: rgb(211, 23, 23);
+  font-size: 14.5px;
 }
