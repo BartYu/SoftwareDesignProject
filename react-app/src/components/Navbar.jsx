@@ -11,7 +11,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     // Perform logout actions before navigating (if needed)
-    navigate("/login");
+    navigate("/");
   };
 
   const isActive = (path) => location.pathname === path;
@@ -100,7 +100,7 @@ const Navbar = () => {
             >
               <li>
                 <button className="dropdown-item" onClick={handleLogout}>
-                  Log Out
+                  <i class="bi bi-box-arrow-left"></i> Log Out
                 </button>
               </li>
             </ul>

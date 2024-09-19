@@ -59,7 +59,7 @@ function Login() {
       <div className="logincheck">
         <p>
           {loginCheck}
-          <Link to="/" className="register-link">
+          <Link to="/register" className="register-link">
             Register
           </Link>
         </p>

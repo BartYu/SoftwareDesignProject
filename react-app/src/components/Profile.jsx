@@ -97,7 +97,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="dashboard">
+    <div className="dashboard bg-dark bg-gradient min-vh-100">
       <Navbar />
       <div className="userProfile">
         <h3>Personal Information</h3>
@@ -109,7 +109,7 @@ const Profile = () => {
           {/* Full Name */}
           <div className="col-md-6">
             <label htmlFor="name" className="form-label">
-              Full Name
+              Full Name *
             </label>
             <input
               type="text"
@@ -127,7 +127,7 @@ const Profile = () => {
           {/* Address 1 */}
           <div className="col-md-6">
             <label htmlFor="address1" className="form-label">
-              Address 1
+              Address 1 *
             </label>
             <input
               type="text"
@@ -160,7 +160,7 @@ const Profile = () => {
           {/* City */}
           <div className="col-md-6">
             <label htmlFor="city" className="form-label">
-              City
+              City *
             </label>
             <input
               type="text"
@@ -176,7 +176,7 @@ const Profile = () => {
           {/* State */}
           <div className="col-md-3">
             <label htmlFor="state" className="form-label">
-              State
+              State *
             </label>
             <select
               id="state"
@@ -199,7 +199,7 @@ const Profile = () => {
           {/* Zip Code */}
           <div className="col-md-3">
             <label htmlFor="zip" className="form-label">
-              Zip code
+              Zip code *
             </label>
             <input
               type="text"
@@ -219,7 +219,7 @@ const Profile = () => {
           {/* Skills Selection */}
           <div className="col-md-6">
             <label htmlFor="skills" className="form-label">
-              Skills
+              Skills *
             </label>
             <Select
               id="skills"
@@ -251,7 +251,7 @@ const Profile = () => {
           {/* Date Selection */}
           <div className="col-md-6">
             <label htmlFor="date" className="form-label">
-              Dates available:
+              Dates available: *
             </label>
             <DatePicker
               id="date"
@@ -264,7 +264,7 @@ const Profile = () => {
 
           <div className="col-12">
             <button type="submit" className="btn btn-primary">
-              Save Changes
+              Save
             </button>
           </div>
         </form>
