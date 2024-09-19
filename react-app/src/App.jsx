@@ -1,6 +1,7 @@
 import Register from "./components/Register";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
+import VolunteerHistory from "./components/VolunteerHistory"; // Import the Volunteer History component
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
@@ -17,6 +18,10 @@ function App() {
     {
       path: "/profile",
       element: <Profile />,
+    },
+    {
+      path: "/volunteer-history", // Add route for Volunteer History
+      element: <VolunteerHistory />,
     },
   ]);
 
