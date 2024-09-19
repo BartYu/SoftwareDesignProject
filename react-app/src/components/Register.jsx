@@ -1,28 +1,42 @@
 import "./Register.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
-  const [visible, setVisible] = useState(false);
-  const toggleVisibility = () => {
-    setVisible(!visible);
+
+  const navigate = useNavigate();
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  const handleSubmission = (event) => {
+    event.preventDefault();
+    let hasError = false;
+
+    setEmailError("");
+    setPasswordError("");
+
+    if (!email) {
+      setEmailError("Please enter your email.");
+      hasError = true;
+    }
+    if (!password) {
+      setPasswordError("Please enter a password.");
+      hasError = true;
+    }
+    if (!hasError) {
+      navigate("/");
+    }
   };
-
-  // const [error, setError] = useState("");
-
-  // const handleSubmission = (event) => {
-  //   event.preventDefault();
-  // };
 
   const loginCheck = "Already have an account? ";
 
   return (
     <div className="addUser">
       <h3> Create Account </h3>
-      <form className="addUserForm">
+      <form className="addUserForm" onSubmit={handleSubmission}>
         <div className="inputGroup">
           <label htmlFor="email">Email address:</label>
           <input
@@ -32,23 +46,23 @@ function Register() {
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="off"
             placeholder="Email"
-            required
+            className={`form-control ${emailError ? "is-invalid" : ""}`}
           />
+          {emailError && <div className="invalid-feedback">{emailError}</div>}
           <label htmlFor="name">Password:</label>
           <div className="password-container">
             <input
-              type={visible ? "text" : "password"}
+              type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="off"
-              placeholder="Password (6+characters) "
-              required
+              placeholder="Password"
+              className={`form-control ${passwordError ? "is-invalid" : ""}`}
             />
-            <i
-              className={`bi ${visible ? "bi-eye-fill" : "bi-eye-slash"}`}
-              onClick={toggleVisibility}
-            ></i>
+            {passwordError && (
+              <div className="invalid-feedback">{passwordError}</div>
+            )}
           </div>
           <label htmlFor="role">Select User Role</label>
           <select
@@ -64,7 +78,7 @@ function Register() {
             <option value="Volunteer">Volunteer</option>
           </select>
           <button type="Submit" className="btn btn-success">
-            Sign Up
+            SIGN UP
           </button>
         </div>
       </form>

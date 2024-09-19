@@ -2,7 +2,7 @@
   font-family: "Open Sans", sans-serif;
   width: 25%;
   margin: 50px;
-  background-color: white;
+  background-color: rgb(211, 223, 233);
   padding: 40px;
   border-radius: 10px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
@@ -27,31 +27,21 @@
   font-size: 14px;
 }
 
-.addUserForm .inputGroup input {
-  padding-left: 8px;
-}
-
 .addUserForm .inputGroup :placeholder-shown {
   font-style: italic;
-  padding-left: 8px;
 }
 
 .addUserForm .password-container {
   position: relative;
-  display: flex;
   align-items: center;
 }
-
 .addUserForm .password-container input {
+  padding-right: 2rem;
   width: 100%;
-  padding-right: 2.5rem;
 }
 
-.addUserForm .password-container i {
-  position: absolute;
-  right: 0.5rem;
-  top: 22%;
-  cursor: pointer;
+.invalid-feedback {
+  position: relative;
 }
 
 .addUserForm .inputGroup button {

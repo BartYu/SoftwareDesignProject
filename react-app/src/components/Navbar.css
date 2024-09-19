@@ -1,0 +1,57 @@
+.hover-dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu {
+  display: none;
+  transition: all 0.3s ease;
+  right: 0;
+}
+.container-fluid .nav {
+  margin-left: 7.7%;
+}
+
+.nav-link {
+  color: inherit;
+}
+
+.nav-item {
+  cursor: pointer;
+}
+
+.nav-link.active {
+  background-color: rgb(109, 109, 109);
+  color: white;
+  border-radius: 0.25rem;
+}
+.nav-link:hover {
+  background-color: #8da3a3;
+  color: #ffffff;
+  border-radius: 0.25rem;
+}
+
+.btn-invisible {
+  color: transparent;
+  background: transparent;
+  border: transparent;
+}
+.btn-invisible .bi-bell {
+  color: black;
+  font-size: 20px;
+}
+.btn-secondary .bi-person-circle {
+  font-size: 18.5px;
+}
+.notification-dot {
+  position: absolute;
+  top: 7px;
+  right: 14px;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: none;
+}
+.notification-dot.show {
+  display: block;
+}
