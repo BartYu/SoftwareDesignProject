@@ -2,9 +2,9 @@
   width: 25%;
   margin: 50px auto;
   padding: 40px;
-  border-radius: 10px;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
-  margin-top: 150px;
+  border-radius: 20px;
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.7);
+  margin-top: 170px;
 }
 
 .addUserForm .inputGroup {
@@ -24,7 +24,18 @@
 .logincheck {
   margin-top: 30px;
   text-align: center;
+  font-weight: bold;
 }
+
+.logincheck a {
+  color: lightskyblue;
+}
+
 .addUser .inputGroup .btn {
   margin-top: 20px;
+}
+
+.addUser .invalid-feedback {
+  color: red;
+  font-weight: bold;
 }

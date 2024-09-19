@@ -1,3 +1,8 @@
+.navbar {
+  --bs-bg-opacity: 1;
+  background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity)) !important;
+}
+
 .hover-dropdown:hover .dropdown-menu {
   display: block;
 }
@@ -20,12 +25,12 @@
 }
 
 .nav-link.active {
-  background-color: rgb(109, 109, 109);
+  background-color: rgb(0, 68, 55);
   color: white;
   border-radius: 0.25rem;
 }
 .nav-link:hover {
-  background-color: #8da3a3;
+  background-color: #37a0a0;
   color: #ffffff;
   border-radius: 0.25rem;
 }

@@ -85,7 +85,7 @@ function Register() {
       <div className="logincheck">
         <p>
           {loginCheck}
-          <Link to="./login" className="login-link">
+          <Link to="/" className="login-link">
             Log in
           </Link>
         </p>

@@ -1,3 +1,4 @@
 body {
-  background-color: darkcyan;
+  background-image: url(/front-bg-app.gif);
+  background-size: cover;
 }
