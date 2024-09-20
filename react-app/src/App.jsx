@@ -2,7 +2,8 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
 import Matching from "./components/Matching";
-import Calendar from "./components/Calendar"
+import Calendar from "./components/Calendar";
+import VolunteerHistory from "./components/VolunteerHistory"; // Import the Volunteer History component
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
@@ -27,6 +28,8 @@ function App() {
     {
       path: "/calendar",
       element: <Calendar />,
+      path: "/history", // Add route for Volunteer History
+      element: <VolunteerHistory />,
     },
   ]);
 
