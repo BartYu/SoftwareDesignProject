@@ -4,30 +4,29 @@ import DatePicker from "react-multi-date-picker";
 import Select from "react-select";
 import Navbar from "./Navbar";
 
-const Management = () => {
+const REQUIRED_SKILLS_LIST = [
+  { value: "Adaptive", label: "Adaptive" },
+  { value: "Creative", label: "Creative" },
+  { value: "Problem-Solving", label: "Problem-Solving" },
+  { value: "Patience", label: "Patience" },
+  { value: "Teamwork", label: "Teamwork" },
+  { value: "Compassion", label: "Compassion" },
+  { value: "Communication", label: "Communication" },
+  { value: "Leadership", label: "Leadership" },
+];
 
+const URGENCY_OPTIONS = [
+  { value: "yes", label: "yes" },
+  { value: "no", label: "no" },
+];
+
+const Management = () => {
   const [eventName, setEventName] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [location, setLocation] = useState("");
   const [requiredSkills, setRequiredSkills] = useState([]);
-  const [urgency, setUrgency] = useState([]);
+  const [urgency, setUrgency] = useState("");
   const [eventDate, setEventDate] = useState("");
-
-  const requiredSkillsList = [
-    { value: "Adaptive", label: "Adaptive" },
-    { value: "Creative", label: "Creative" },
-    { value: "Problem-Solving", label: "Problem-Solving" },
-    { value: "Patience", label: "Patience" },
-    { value: "Teamwork", label: "Teamwork" },
-    { value: "Compassion", label: "Compassion" },
-    { value: "Communication", label: "Communication" },
-    { value: "Leadership", label: "Leadership" },
-  ];
-
-  const urgencyList = [
-    { value: "yes", label: "yes" },
-    { value: "no", label: "no" },
-  ];
 
   const [eventNameError, setEventNameError] = useState("");
   const [eventDescriptionError, setEventDescriptionError] = useState("");
@@ -58,7 +57,7 @@ const Management = () => {
       setRequiredSkillsError("Please select at least one skill.");
       hasError = true;
     }
-    if (urgency.length === 0) {
+    if (urgency === "") {
       setUrgencyError("Please select the urgency information.");
       hasError = true;
     }
@@ -138,7 +137,7 @@ const Management = () => {
             </label>
             <Select
               id="skills"
-              options={requiredSkillsList}
+              options={REQUIRED_SKILLS_LIST}
               value={requiredSkills}
               isMulti
               onChange={(selectedOptions) => setRequiredSkills(selectedOptions || [])}
@@ -156,10 +155,10 @@ const Management = () => {
             </label>
             <Select
               id="urgency"
-              options={urgencyList}
-              value={urgencyError}
-              isMulti
-              onChange={(selectedOptions) => setUrgency(selectedOptions || [])}
+              options={URGENCY_OPTIONS}
+              value={urgency}
+              onChange={(selectedOption) => {
+                return setUrgency(selectedOption)}}
               className={urgencyError ? "is-invalid" : ""}
             />
             {urgencyError && (
