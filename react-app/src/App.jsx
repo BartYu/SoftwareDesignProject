@@ -1,6 +1,8 @@
 import Register from "./components/Register";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
+import Matching from "./components/Matching";
+import Calendar from "./components/Calendar"
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
@@ -17,6 +19,14 @@ function App() {
     {
       path: "/profile",
       element: <Profile />,
+    },
+    {
+      path: "/matching",
+      element: <Matching />,
+    },
+    {
+      path: "/calendar",
+      element: <Calendar />,
     },
   ]);
 
