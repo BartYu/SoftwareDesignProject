@@ -2,6 +2,7 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
 import Matching from "./components/Matching";
+import Management from "./components/Management";
 import Calendar from "./components/Calendar";
 import VolunteerHistory from "./components/VolunteerHistory"; // Import the Volunteer History component
 import "./App.css";
@@ -24,6 +25,10 @@ function App() {
     {
       path: "/matching",
       element: <Matching />,
+    },
+    {
+      path: "/management",
+      element: <Management />,
     },
     {
       path: "/calendar",
