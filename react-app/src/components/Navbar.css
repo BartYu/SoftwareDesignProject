@@ -12,6 +12,7 @@
   transition: all 0.3s ease;
   right: 0;
 }
+
 .container-fluid .nav {
   margin-left: 7.7%;
 }
@@ -29,6 +30,7 @@
   color: white;
   border-radius: 0.25rem;
 }
+
 .nav-link:hover {
   background-color: #37a0a0;
   color: #ffffff;
@@ -40,13 +42,16 @@
   background: transparent;
   border: transparent;
 }
+
 .btn-invisible .bi-bell {
   color: black;
   font-size: 20px;
 }
+
 .btn-secondary .bi-person-circle {
   font-size: 18.5px;
 }
+
 .notification-dot {
   position: absolute;
   top: 7px;
@@ -57,6 +62,20 @@
   border-radius: 50%;
   display: none;
 }
+
 .notification-dot.show {
   display: block;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-item {
+  color: #000; 
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #0056b3; 
 }

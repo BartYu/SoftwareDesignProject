@@ -1,20 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { notifications } from "./notif-data";
 import "./Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  // Notifications testing
-  const [hasNotifications, setHasNotifications] = useState(true);
+  const [showDropdown, setShowDropdown] = useState(false); 
+  const hasNotifications = notifications.length > 0; 
 
   const handleLogout = () => {
-    // Perform logout actions before navigating (if needed)
     navigate("/");
   };
 
   const isActive = (path) => location.pathname === path;
+
+  const toggleDropdown = () => {
+    setShowDropdown((prev) => !prev);
+  };
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -41,7 +44,6 @@ const Navbar = () => {
                 Management
               </a>
             </li>
-            {/* Extra Calendar feature */}
             <li className="nav-item">
               <a
                 className={`nav-link ${isActive("/calendar") ? "active" : ""}`}
@@ -71,19 +73,29 @@ const Navbar = () => {
             </li>
           </ul>
           {/* Notification icon function */}
-          <div className="dropdown ms-auto dropdown">
+          <div className="dropdown ms-auto">
             <button
               className="btn btn-secondary dropdown-toggle btn-invisible"
               type="button"
               id="notification"
-              data-bs-toggle="dropdown"
+              onClick={toggleDropdown} 
             >
               <i className="bi bi-bell"></i>
             </button>
             {/* Notification dot */}
-            <div
-              className={`notification-dot ${hasNotifications ? "show" : ""}`}
-            ></div>
+            <div className={`notification-dot ${hasNotifications ? "show" : ""}`}></div>
+            {/* Notification dropdown */}
+            {showDropdown && (
+              <ul className="dropdown-menu dropdown-menu-end show">
+                {notifications.map((notification) => (
+                  <li key={notification.id}>
+                    <a className="dropdown-item" href="#">
+                      {notification.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           {/* User icon dropdown */}
           <div className="dropdown ms-auto hover-dropdown">
@@ -100,7 +112,7 @@ const Navbar = () => {
             >
               <li>
                 <button className="dropdown-item" onClick={handleLogout}>
-                  <i class="bi bi-box-arrow-left"></i> Log Out
+                  <i className="bi bi-box-arrow-left"></i> Log Out
                 </button>
               </li>
             </ul>

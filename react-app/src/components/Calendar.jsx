@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './calendar.css';
-import { events as availableEvents } from './data';
+import { events as availableEvents } from './user-event-data';
 import Navbar from "./Navbar";
 
 const daysInWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
