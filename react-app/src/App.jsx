@@ -28,7 +28,9 @@ function App() {
     {
       path: "/calendar",
       element: <Calendar />,
-      path: "/history", // Add route for Volunteer History
+    },
+    {
+      path: "/history",
       element: <VolunteerHistory />,
     },
   ]);
