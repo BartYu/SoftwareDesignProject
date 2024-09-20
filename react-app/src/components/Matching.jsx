@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { events, volunteers } from '../components/data';
+import { events, volunteers } from '../components/user-event-data';
 import Navbar from "./Navbar";
 import './matching.css'; 
 
