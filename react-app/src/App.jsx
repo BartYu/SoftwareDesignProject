@@ -20,7 +20,7 @@ function App() {
       element: <Profile />,
     },
     {
-      path: "/volunteer-history", // Add route for Volunteer History
+      path: "/history", // Add route for Volunteer History
       element: <VolunteerHistory />,
     },
   ]);
