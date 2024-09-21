@@ -6,8 +6,8 @@ import "./Navbar.css";
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [showDropdown, setShowDropdown] = useState(false); 
-  const hasNotifications = notifications.length > 0; 
+  const [showDropdown, setShowDropdown] = useState(false);
+  const hasNotifications = notifications.length > 0;
 
   const handleLogout = () => {
     navigate("/");
@@ -41,7 +41,8 @@ const Navbar = () => {
                 aria-current="page"
                 onClick={() => navigate("/management")}
               >
-                Management
+                <span>Event</span>
+                <span>Management</span>
               </a>
             </li>
             <li className="nav-item">
@@ -59,7 +60,8 @@ const Navbar = () => {
                 aria-current="page"
                 onClick={() => navigate("/matching")}
               >
-                Matching
+                <span>Volunteer</span>
+                <span>Matching</span>
               </a>
             </li>
             <li className="nav-item">
@@ -68,7 +70,8 @@ const Navbar = () => {
                 aria-current="page"
                 onClick={() => navigate("/history")}
               >
-                History
+                <span>Event</span>
+                <span>History</span>
               </a>
             </li>
           </ul>
@@ -78,12 +81,14 @@ const Navbar = () => {
               className="btn btn-secondary dropdown-toggle btn-invisible"
               type="button"
               id="notification"
-              onClick={toggleDropdown} 
+              onClick={toggleDropdown}
             >
               <i className="bi bi-bell"></i>
             </button>
             {/* Notification dot */}
-            <div className={`notification-dot ${hasNotifications ? "show" : ""}`}></div>
+            <div
+              className={`notification-dot ${hasNotifications ? "show" : ""}`}
+            ></div>
             {/* Notification dropdown */}
             {showDropdown && (
               <ul className="dropdown-menu dropdown-menu-end show">

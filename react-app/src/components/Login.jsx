@@ -38,7 +38,7 @@ function Login() {
             className={`form-control ${error && !email ? "is-invalid" : ""}`}
           />
           {!email && error && <div className="invalid-feedback">{error}</div>}
-          <label htmlFor="name">Password:</label>
+          <label htmlFor="name">Password</label>
           <input
             type="password"
             id="password"

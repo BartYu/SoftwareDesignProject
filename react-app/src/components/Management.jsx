@@ -16,8 +16,9 @@ const REQUIRED_SKILLS_LIST = [
 ];
 
 const URGENCY_OPTIONS = [
-  { value: "yes", label: "yes" },
-  { value: "no", label: "no" },
+  { value: "High", label: "High" },
+  { value: "Medium", label: "Medium" },
+  { value: "Low", label: "Low" },
 ];
 
 const Management = () => {
@@ -52,7 +53,7 @@ const Management = () => {
       setLocationError("Please enter the event location.");
       hasError = true;
     }
-   
+
     if (requiredSkills.length === 0) {
       setRequiredSkillsError("Please select at least one skill.");
       hasError = true;
@@ -73,10 +74,10 @@ const Management = () => {
   };
 
   return (
-    <div className="dashboard bg-dark bg-gradient min-vh-100">
+    <div className="dashboard">
       <Navbar />
       <div className="management">
-        <h3>Management Information</h3>
+        <h3>Event Information</h3>
         <form
           className="row g-3 needs-validation"
           noValidate
@@ -100,34 +101,40 @@ const Management = () => {
             )}
           </div>
 
-             {/* Event Description */}
+          {/* Event Description */}
           <div className="col-md-12">
             <label htmlFor="description" className="form-label">
-            Event Description *
+              Event Description *
             </label>
-            <textarea 
-              className={`form-control ${eventDescriptionError ? "is-invalid" : ""}`}
+            <textarea
+              className={`form-control ${
+                eventDescriptionError ? "is-invalid" : ""
+              }`}
               id="description"
               rows="3"
               value={eventDescription}
               onChange={(e) => setEventDescription(e.target.value)}
             ></textarea>
-             {eventDescriptionError && <div className="invalid-feedback">{eventDescriptionError}</div>}
+            {eventDescriptionError && (
+              <div className="invalid-feedback">{eventDescriptionError}</div>
+            )}
           </div>
 
-             {/* Event Location */}
+          {/* Event Location */}
           <div className="col-md-12">
             <label htmlFor="location" className="form-label">
-            Event Location *
+              Event Location *
             </label>
             <textarea
-               className={`form-control ${locationError ? "is-invalid" : ""}`}
+              className={`form-control ${locationError ? "is-invalid" : ""}`}
               id="location"
               rows="3"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
             ></textarea>
-            {locationError && <div className="invalid-feedback">{locationError}</div>}
+            {locationError && (
+              <div className="invalid-feedback">{locationError}</div>
+            )}
           </div>
 
           {/* Skills Selection */}
@@ -140,7 +147,9 @@ const Management = () => {
               options={REQUIRED_SKILLS_LIST}
               value={requiredSkills}
               isMulti
-              onChange={(selectedOptions) => setRequiredSkills(selectedOptions || [])}
+              onChange={(selectedOptions) =>
+                setRequiredSkills(selectedOptions || [])
+              }
               className={requiredSkillsError ? "is-invalid" : ""}
             />
             {requiredSkillsError && (
@@ -151,14 +160,15 @@ const Management = () => {
           {/* urgency Selection */}
           <div className="col-md-6">
             <label htmlFor="urgency" className="form-label">
-              Is urgent? *
+              Urgency *
             </label>
             <Select
               id="urgency"
               options={URGENCY_OPTIONS}
               value={urgency}
               onChange={(selectedOption) => {
-                return setUrgency(selectedOption)}}
+                return setUrgency(selectedOption);
+              }}
               className={urgencyError ? "is-invalid" : ""}
             />
             {urgencyError && (
@@ -169,20 +179,17 @@ const Management = () => {
           {/* Date Selection */}
           <div className="col-md-6">
             <label htmlFor="date" className="form-label">
-              Event Dates: *
+              Event Date: *
             </label>
-            <DatePicker
-              id="date"
-              mode="multiple"
-              value={eventDate}
-              onChange={setEventDate}
-            />
-            {eventDateError && <div className="error-message">{eventDateError}</div>}
+            <DatePicker id="date" value={eventDate} onChange={setEventDate} />
+            {eventDateError && (
+              <div className="error-message">{eventDateError}</div>
+            )}
           </div>
 
           <div className="col-12">
             <button type="submit" className="btn btn-primary">
-              Save
+              Create event
             </button>
           </div>
         </form>

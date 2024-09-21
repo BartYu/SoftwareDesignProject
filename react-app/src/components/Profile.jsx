@@ -97,7 +97,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="dashboard bg-dark bg-gradient min-vh-100">
+    <div className="dashboard">
       <Navbar />
       <div className="userProfile">
         <h3>Personal Information</h3>

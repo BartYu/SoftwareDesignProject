@@ -38,7 +38,7 @@ function Register() {
       <h3> Create Account </h3>
       <form className="addUserForm" onSubmit={handleSubmission}>
         <div className="inputGroup">
-          <label htmlFor="email">Email address:</label>
+          <label htmlFor="email">Email address</label>
           <input
             type="email"
             id="email"
@@ -49,7 +49,7 @@ function Register() {
             className={`form-control ${emailError ? "is-invalid" : ""}`}
           />
           {emailError && <div className="invalid-feedback">{emailError}</div>}
-          <label htmlFor="name">Password:</label>
+          <label htmlFor="name">Password</label>
           <div className="password-container">
             <input
               type="password"
@@ -64,7 +64,7 @@ function Register() {
               <div className="invalid-feedback">{passwordError}</div>
             )}
           </div>
-          <label htmlFor="role">Select User Role</label>
+          <label htmlFor="role">Role</label>
           <select
             id="role"
             value={role}

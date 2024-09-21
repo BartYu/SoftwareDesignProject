@@ -1,6 +1,8 @@
 .navbar {
   --bs-bg-opacity: 1;
   background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity)) !important;
+  font-weight: 555;
+  padding: -20px;
 }
 
 .hover-dropdown:hover .dropdown-menu {
@@ -19,6 +21,14 @@
 
 .nav-link {
   color: inherit;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  min-height: 55px;
+}
+.nav-link span {
+  margin: -2px;
 }
 
 .nav-item {
@@ -72,10 +82,10 @@
 }
 
 .dropdown-item {
-  color: #000; 
+  color: #000;
 }
 
 .dropdown-item:hover {
   background-color: #f8f9fa;
-  color: #0056b3; 
+  color: #0056b3;
 }

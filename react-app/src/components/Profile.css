@@ -1,8 +1,8 @@
 .userProfile {
   font-family: "Open Sans", sans-serif;
-  width: 50%;
-  margin: 50px auto;
-  padding: 40px;
+  width: 60%;
+  margin: 40px auto;
+  padding: 60px;
   border-radius: 10px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
   background-color: rgb(211, 223, 233);
@@ -13,7 +13,7 @@
   font-weight: bold;
   color: darkcyan;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  margin-bottom: 40px;
+  margin-bottom: 65px;
 }
 
 .userProfile label {
