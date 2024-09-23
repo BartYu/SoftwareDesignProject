@@ -1,11 +1,16 @@
 from flask import Flask
 from flask_cors import CORS
+from modules import register_routes
+
+
 app  = Flask(__name__)
 CORS(app)
 
-@app.route('/')
+register_routes(app)
+
+@app.route('/') 
 def home():
-    return "Back-end Server"
+    return "Back-end"
 
 
 if __name__== "__main__":
