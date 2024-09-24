@@ -39,16 +39,6 @@ const Profile = () => {
   const handleSubmission = (event) => {
     event.preventDefault();
 
-    // console.log({
-    //   fullName,
-    //   address1,
-    //   city,
-    //   selectedState,
-    //   zipCode,
-    //   skills,
-    //   selectedDates,
-    // });
-
     // Reset error messages
     setFullNameError("");
     setAddress1Error("");

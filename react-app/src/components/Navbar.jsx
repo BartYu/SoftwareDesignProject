@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { notifications } from "./notif-data";
+import { useAuth } from "./AuthContext";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -8,8 +9,11 @@ const Navbar = () => {
   const location = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
   const hasNotifications = notifications.length > 0;
+  const { userRole } = useAuth();
 
+  const { logout } = useAuth();
   const handleLogout = () => {
+    logout();
     navigate("/");
   };
 
@@ -33,18 +37,21 @@ const Navbar = () => {
                 Profile
               </a>
             </li>
-            <li className="nav-item">
-              <a
-                className={`nav-link ${
-                  isActive("/management") ? "active" : ""
-                }`}
-                aria-current="page"
-                onClick={() => navigate("/management")}
-              >
-                <span>Event</span>
-                <span>Management</span>
-              </a>
-            </li>
+            {/* Management page unavailable for Volunteers */}
+            {userRole !== "volunteer" && (
+              <li className="nav-item">
+                <a
+                  className={`nav-link ${
+                    isActive("/management") ? "active" : ""
+                  }`}
+                  aria-current="page"
+                  onClick={() => navigate("/management")}
+                >
+                  <span>Event</span>
+                  <span>Management</span>
+                </a>
+              </li>
+            )}
             <li className="nav-item">
               <a
                 className={`nav-link ${isActive("/calendar") ? "active" : ""}`}

@@ -6,17 +6,16 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [roleError, setRoleError] = useState("");
 
-  const handleSubmission = (event) => {
+  const handleSubmission = async (event) => {
     event.preventDefault();
     let hasError = false;
-
-    setEmailError("");
-    setPasswordError("");
 
     if (!email) {
       setEmailError("Please enter your email.");
@@ -26,8 +25,31 @@ function Register() {
       setPasswordError("Please enter a password.");
       hasError = true;
     }
+    if (!role) {
+      setRoleError("Please select your role.");
+      hasError = true;
+    }
     if (!hasError) {
-      navigate("/");
+      setLoading(true);
+      try {
+        const response = await fetch("http://localhost:5000/auth/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password, role }),
+        });
+        if (!response.ok) {
+          const responseData = await response.json();
+          setEmailError(responseData.msg);
+          setLoading(false);
+          return;
+        }
+        navigate("/");
+      } catch (err) {
+        setEmailError("An error occurred. Please try again.");
+      }
+      setLoading(false);
     }
   };
 
@@ -43,19 +65,25 @@ function Register() {
             type="email"
             id="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (emailError) setEmailError("");
+            }}
             autoComplete="off"
             placeholder="Email"
             className={`form-control ${emailError ? "is-invalid" : ""}`}
           />
           {emailError && <div className="invalid-feedback">{emailError}</div>}
-          <label htmlFor="name">Password</label>
+          <label htmlFor="password">Password</label>
           <div className="password-container">
             <input
               type="password"
               id="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (passwordError) setPasswordError("");
+              }}
               autoComplete="off"
               placeholder="Password"
               className={`form-control ${passwordError ? "is-invalid" : ""}`}
@@ -68,18 +96,28 @@ function Register() {
           <select
             id="role"
             value={role}
-            onChange={(e) => setRole(e.target.value)}
-            required
+            onChange={(e) => {
+              setRole(e.target.value);
+              if (e.target.value) setRoleError("");
+            }}
+            className={`form-control ${roleError ? "is-invalid" : ""}`}
           >
             <option selected disabled value="">
               --Select--
             </option>
-            <option value="Admin">Admin</option>
-            <option value="Volunteer">Volunteer</option>
+            <option value="admin">Admin</option>
+            <option value="volunteer">Volunteer</option>
           </select>
-          <button type="Submit" className="btn btn-success">
-            SIGN UP
-          </button>
+          {roleError && <div className="invalid-feedback">{roleError}</div>}
+          <div className="btn-container">
+            <button
+              type="submit"
+              className="btn btn-success"
+              disabled={loading}
+            >
+              SIGN UP {loading && <div className="spinner"></div>}
+            </button>
+          </div>
         </div>
       </form>
       <div className="logincheck">
