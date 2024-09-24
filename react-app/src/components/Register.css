@@ -2,14 +2,14 @@
   font-family: "Open Sans", sans-serif;
   width: 25%;
   margin: 50px;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.33);
   padding: 40px;
 }
 .addUser h3 {
   text-align: center;
   font-weight: bold;
   font-size: 28.8px;
-  color: darkcyan;
+  color: rgb(0, 88, 88);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
