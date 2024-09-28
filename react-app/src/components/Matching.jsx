@@ -1,95 +1,75 @@
-import React, { useState } from 'react';
-import { events, volunteers } from '../components/user-event-data';
+import React, { useState, useEffect } from 'react';
 import Navbar from "./Navbar";
 import './matching.css'; 
 
 const Matching = () => {
-    const [selectedVolunteer, setSelectedVolunteer] = useState(null);
-    const [selectedEvent, setSelectedEvent] = useState(null);
     const [matches, setMatches] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const handleMatch = () => {
-        if (selectedVolunteer === null || selectedEvent === null) return;
+    useEffect(() => {
+        const fetchMatches = async () => {
+            try {
+                await fetch("http://localhost:5000/macho/match", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
 
-        const newMatch = {
-            volunteerId: selectedVolunteer,
-            eventId: selectedEvent,
+                const response = await fetch("http://localhost:5000/macho/matches", {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('error');
+                }
+
+                const data = await response.json();
+                setMatches(data);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
         };
 
-        const existingMatch = matches.find(match => 
-            match.volunteerId === newMatch.volunteerId && match.eventId === newMatch.eventId
-        );
-
-        if (existingMatch) {
-            alert("This volunteer is already matched with this event.");
-            return;
-        }
-
-        setMatches(prevMatches => [...prevMatches, newMatch]);
-        setSelectedVolunteer(null);
-        setSelectedEvent(null);
-    };
+        fetchMatches();
+    }, []);
 
     const handleDeleteMatch = (matchIndex) => {
         setMatches(prevMatches => prevMatches.filter((_, index) => index !== matchIndex));
     };
 
-    const getVolunteerName = (id) => {
-        const volunteer = volunteers.find(v => v.id === id);
-        return volunteer ? volunteer.name : 'Unknown Volunteer';
-    };
+    if (loading) {
+        return <div>Loading</div>;
+    }
 
-    const getEventTitle = (id) => {
-        const event = events.find(e => e.id === id);
-        return event ? event.title : 'Unknown Event';
-    };
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div>
             <Navbar /> 
             <div className="matchingContainer"> 
-                <h1>Match Volunteers to Events</h1>
-
-                <div>
-                    <h2>Select Volunteer</h2>
-                    <select 
-                        onChange={(e) => setSelectedVolunteer(Number(e.target.value))} 
-                        value={selectedVolunteer || ''}
-                    >
-                        <option value="">Select a volunteer</option>
-                        {volunteers.map(volunteer => (
-                            <option key={volunteer.id} value={volunteer.id}>
-                                {volunteer.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div>
-                    <h2>Select Event</h2>
-                    <select 
-                        onChange={(e) => setSelectedEvent(Number(e.target.value))} 
-                        value={selectedEvent || ''}
-                    >
-                        <option value="">Select an event</option>
-                        {events.map(event => (
-                            <option key={event.id} value={event.id}>
-                                {event.title}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <button className="match-button" onClick={handleMatch}>Match</button>
-
-                <h2>Current Matches</h2>
+                <h1>Current Matches</h1>
                 <ul>
-                    {matches.map((match, index) => (
-                        <li key={index}>
-                            Volunteer {getVolunteerName(match.volunteerId)} matched with Event {getEventTitle(match.eventId)}
-                            <button className="delete-button" onClick={() => handleDeleteMatch(index)}>Delete</button>
-                        </li>
-                    ))}
+                    {matches.length > 0 ? (
+                        matches.map((match, index) => (
+                            <li key={index}>
+                                <span className="match-info">
+                                    Volunteer {match.volunteerName} matched with Event {match.eventTitle} for {match.date} (Priority: {match.priority})
+                                </span>
+                                <button className="delete-button" onClick={() => handleDeleteMatch(index)}>Delete</button>
+                            </li>
+                        ))
+                    ) : (
+                        <li>No matches found.</li>
+                    )}
                 </ul>
             </div>
         </div>

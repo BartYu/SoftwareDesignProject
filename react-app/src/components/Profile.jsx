@@ -248,6 +248,7 @@ const Profile = () => {
               mode="multiple"
               value={selectedDates}
               onChange={setSelectedDates}
+              format={"MM/DD/YYYY"}
             />
             {datesError && <div className="error-message">{datesError}</div>}
           </div>
