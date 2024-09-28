@@ -1,62 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from "./Navbar";
 import './matching.css'; 
+import './login.css';
 
 const Matching = () => {
     const [matches, setMatches] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchMatches = async () => {
-            try {
-                await fetch("http://localhost:5000/macho/match", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
+    const fetchMatches = async () => {
+        setLoading(true);
+        setError(null); 
+        try {
+            await fetch("http://localhost:5000/macho/match", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
-                const response = await fetch("http://localhost:5000/macho/matches", {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
+            const response = await fetch("http://localhost:5000/macho/matches", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
-                if (!response.ok) {
-                    throw new Error('error');
-                }
-
-                const data = await response.json();
-                setMatches(data);
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
+            if (!response.ok) {
+                throw new Error('Error fetching matches');
             }
-        };
 
-        fetchMatches();
-    }, []);
+            const data = await response.json();
+            setMatches(data);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleDeleteMatch = (matchIndex) => {
         setMatches(prevMatches => prevMatches.filter((_, index) => index !== matchIndex));
     };
-
-    if (loading) {
-        return <div>Loading</div>;
-    }
-
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
 
     return (
         <div>
             <Navbar /> 
             <div className="matchingContainer"> 
                 <h1>Current Matches</h1>
+                <button className="match-button" onClick={fetchMatches}>Match</button>
+                {loading && <div className="spinner"></div>}
+                {error && <div>Error: {error}</div>}
                 <ul>
                     {matches.length > 0 ? (
                         matches.map((match, index) => (
