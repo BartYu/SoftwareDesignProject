@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+import re
 
 login_bp = Blueprint("login", __name__)
 
@@ -13,8 +14,8 @@ users = {
 def register():
     data = request.json
     email = data.get("email")
-    password = data.get("password")
-    role = data.get("role")
+    # password = data.get("password")
+    # role = data.get("role")
 
     if email in users:
         return jsonify({"msg": "This email is already registered."}), 400
@@ -30,7 +31,15 @@ def login():
     email = data.get("email")
     password = data.get("password")
 
+    if not email or not password:
+        return jsonify({"error": "Email and password are required."}), 400
+
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        return jsonify({"error": "Invalid email format."})
+
     if email in users and users[email]["password"] == password:
+        # session["user"] = email
+        # session["role"] = users[email]["role"]
         role = users[email]["role"]
         return jsonify({"msg": "Login successful!", "role": role}), 200
 

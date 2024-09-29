@@ -3,15 +3,20 @@ from flask_cors import CORS
 from modules import register_routes
 
 
-app  = Flask(__name__)
-CORS(app)
+def create_app():
 
-register_routes(app)
+    app = Flask(__name__)
+    CORS(app)
 
-@app.route('/') 
-def home():
-    return "Back-end"
+    register_routes(app)
+
+    @app.route("/")
+    def home():
+        return "Back-end"
+
+    return app
 
 
-if __name__== "__main__":
+if __name__ == "__main__":
+    app = create_app()
     app.run(debug=True, port=5000)

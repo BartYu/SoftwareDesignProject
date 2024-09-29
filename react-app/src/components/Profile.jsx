@@ -6,15 +6,15 @@ import { usStates } from "./states";
 import Navbar from "./Navbar";
 
 const Profile = () => {
-  const [selectedDates, setSelectedDates] = useState([]);
-  const [selectedState, setSelectedState] = useState("");
-  const [skills, setSkills] = useState([]);
   const [fullName, setFullName] = useState("");
   const [address1, setAddress1] = useState("");
   const [address2, setAddress2] = useState("");
   const [city, setCity] = useState("");
+  const [selectedState, setSelectedState] = useState("");
   const [zipCode, setZipCode] = useState("");
+  const [skills, setSkills] = useState([]);
   const [preferences, setPreferences] = useState("");
+  const [selectedDates, setSelectedDates] = useState([]);
 
   const skillOptions = [
     { value: "Adaptive", label: "Adaptive" },
@@ -27,7 +27,6 @@ const Profile = () => {
     { value: "Leadership", label: "Leadership" },
   ];
 
-  // Error states
   const [fullNameError, setFullNameError] = useState("");
   const [address1Error, setAddress1Error] = useState("");
   const [cityError, setCityError] = useState("");
@@ -36,21 +35,12 @@ const Profile = () => {
   const [skillsError, setSkillsError] = useState("");
   const [datesError, setDatesError] = useState("");
 
-  const handleSubmission = (event) => {
+  const [loading, setLoading] = useState(false);
+  const SaveChanges = async (event) => {
     event.preventDefault();
-
-    // Reset error messages
-    setFullNameError("");
-    setAddress1Error("");
-    setCityError("");
-    setStateError("");
-    setZipCodeError("");
-    setSkillsError("");
-    setDatesError("");
 
     let hasError = false;
 
-    // Validate fields
     if (!fullName) {
       setFullNameError("Please enter your full name.");
       hasError = true;
@@ -81,8 +71,36 @@ const Profile = () => {
     }
 
     if (!hasError) {
-      // Proceed with form submission logic
-      alert("Profile saved successfully!");
+      const profileData = {
+        name: fullName,
+        address1: address1,
+        address2: address2,
+        city: city,
+        state: selectedState,
+        zip: zipCode,
+        skills: skills.map((skill) => skill.value),
+        preferences: preferences,
+        dates: selectedDates.map((date) => date.format("MM/DD/YYYY")),
+      };
+      setLoading(true);
+      try {
+        const response = await fetch("http://localhost:5000/user/profile", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(profileData),
+        });
+        const responseData = await response.json();
+        if (!response.ok) {
+          return;
+        }
+        alert("Profile saved successfully!");
+      } catch (error) {
+        console.error("Error saving profile changes.", error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -94,7 +112,7 @@ const Profile = () => {
         <form
           className="row g-3 needs-validation"
           noValidate
-          onSubmit={handleSubmission}
+          onSubmit={SaveChanges}
         >
           {/* Full Name */}
           <div className="col-md-6">
@@ -106,7 +124,10 @@ const Profile = () => {
               id="name"
               maxLength="50"
               value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              onChange={(e) => {
+                setFullName(e.target.value);
+                if (fullNameError) setFullNameError("");
+              }}
               className={`form-control ${fullNameError ? "is-invalid" : ""}`}
             />
             {fullNameError && (
@@ -124,7 +145,10 @@ const Profile = () => {
               id="address1"
               maxLength="100"
               value={address1}
-              onChange={(e) => setAddress1(e.target.value)}
+              onChange={(e) => {
+                setAddress1(e.target.value);
+                if (address1Error) setAddress1Error("");
+              }}
               className={`form-control ${address1Error ? "is-invalid" : ""}`}
             />
             {address1Error && (
@@ -157,7 +181,10 @@ const Profile = () => {
               id="city"
               maxLength="100"
               value={city}
-              onChange={(e) => setCity(e.target.value)}
+              onChange={(e) => {
+                setCity(e.target.value);
+                if (cityError) setCityError("");
+              }}
               className={`form-control ${cityError ? "is-invalid" : ""}`}
             />
             {cityError && <div className="invalid-feedback">{cityError}</div>}
@@ -171,7 +198,10 @@ const Profile = () => {
             <select
               id="state"
               value={selectedState}
-              onChange={(e) => setSelectedState(e.target.value)}
+              onChange={(e) => {
+                setSelectedState(e.target.value);
+                if (e.target.value) setStateError("");
+              }}
               className={`form-select ${stateError ? "is-invalid" : ""}`}
             >
               <option disabled value="">
@@ -198,7 +228,10 @@ const Profile = () => {
               title="Invalid zip code"
               maxLength="10"
               value={zipCode}
-              onChange={(e) => setZipCode(e.target.value)}
+              onChange={(e) => {
+                setZipCode(e.target.value);
+                if (zipCodeError) setZipCodeError("");
+              }}
               className={`form-control ${zipCodeError ? "is-invalid" : ""}`}
             />
             {zipCodeError && (
@@ -216,7 +249,12 @@ const Profile = () => {
               options={skillOptions}
               value={skills}
               isMulti
-              onChange={(selectedOptions) => setSkills(selectedOptions || [])}
+              onChange={(selectedOptions) => {
+                setSkills(selectedOptions || []);
+                if (selectedOptions && selectedOptions.length > 0) {
+                  setSkillsError("");
+                }
+              }}
               className={skillsError ? "is-invalid" : ""}
             />
             {skillsError && (
@@ -238,23 +276,46 @@ const Profile = () => {
             ></textarea>
           </div>
 
-          {/* Date Selection */}
-          <div className="col-md-6">
-            <label htmlFor="date" className="form-label">
+          {/* Dates Selection */}
+          <div className="col-md-6 dates">
+            <label htmlFor="dates" className="form-label">
               Dates available: *
             </label>
-            <DatePicker
-              id="date"
-              mode="multiple"
-              value={selectedDates}
-              onChange={setSelectedDates}
-            />
+            <div className="dates-container">
+              <DatePicker
+                id="dates"
+                mode="multiple"
+                value={selectedDates}
+                onChange={(dates) => {
+                  setSelectedDates(dates || []);
+                  if (dates && dates.length > 0) {
+                    setDatesError("");
+                  }
+                }}
+                className="date-picker"
+                editable={false}
+              />
+              <button
+                type="button"
+                className="btn btn-danger clear-dates"
+                onClick={() => {
+                  setSelectedDates([]);
+                  setDatesError("");
+                }}
+              >
+                Clear
+              </button>
+            </div>
             {datesError && <div className="error-message">{datesError}</div>}
           </div>
 
-          <div className="col-12">
-            <button type="submit" className="btn btn-primary">
-              Save
+          <div className="saveButton col-12">
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={loading}
+            >
+              Save {loading && <div className="spinner"></div>}
             </button>
           </div>
         </form>

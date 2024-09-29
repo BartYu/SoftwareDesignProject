@@ -12,6 +12,8 @@ function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  const emailRegrex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const handleSubmission = async (event) => {
     event.preventDefault();
     let isValid = true;
@@ -19,6 +21,11 @@ function Login() {
     if (!email) {
       setEmailError("Please enter your email.");
       isValid = false;
+    } else if (!emailRegrex.test(email)) {
+      setEmailError("Please enter a valid email address.");
+      isValid = false;
+    } else {
+      setEmailError("");
     }
     if (!password) {
       setPasswordError("Please enter your password.");
@@ -61,7 +68,7 @@ function Login() {
         <div className="inputGroup">
           <label htmlFor="email">Username</label>
           <input
-            type="email"
+            type="text"
             id="email"
             value={email}
             onChange={(e) => {
