@@ -14,7 +14,7 @@ function Login() {
 
   const emailRegrex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const handleSubmission = async (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
     let isValid = true;
 
@@ -39,6 +39,7 @@ function Login() {
           headers: {
             "Content-type": "application/json",
           },
+          credentials: "include",
           body: JSON.stringify({ email, password }),
         });
         const responseData = await response.json();
@@ -64,7 +65,7 @@ function Login() {
   return (
     <div className="addUser">
       <h3> Welcome Back! </h3>
-      <form className="addUserForm" onSubmit={handleSubmission}>
+      <form className="addUserForm" onSubmit={handleLogin}>
         <div className="inputGroup">
           <label htmlFor="email">Username</label>
           <input
@@ -102,7 +103,13 @@ function Login() {
               className="btn btn-primary"
               disabled={loading}
             >
-              LOGIN {loading && <div className="spinner"></div>}
+              {loading ? (
+                <>
+                  <div className="spinner"></div> Logging in...
+                </>
+              ) : (
+                "LOGIN"
+              )}
             </button>
           </div>
         </div>
