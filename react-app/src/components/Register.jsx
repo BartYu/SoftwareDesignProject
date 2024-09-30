@@ -13,6 +13,8 @@ function Register() {
   const [passwordError, setPasswordError] = useState("");
   const [roleError, setRoleError] = useState("");
 
+  const emailRegrex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const handleSubmission = async (event) => {
     event.preventDefault();
     let hasError = false;
@@ -20,6 +22,11 @@ function Register() {
     if (!email) {
       setEmailError("Please enter your email.");
       hasError = true;
+    } else if (!emailRegrex.test(email)) {
+      setEmailError("Please enter a valid email address.");
+      hasError = true;
+    } else {
+      setEmailError("");
     }
     if (!password) {
       setPasswordError("Please enter a password.");
@@ -45,11 +52,13 @@ function Register() {
           setLoading(false);
           return;
         }
+        alert("Registered successfully!");
         navigate("/");
       } catch (err) {
         setEmailError("An error occurred. Please try again.");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
   };
 
@@ -62,7 +71,7 @@ function Register() {
         <div className="inputGroup">
           <label htmlFor="email">Email address</label>
           <input
-            type="email"
+            type="text"
             id="email"
             value={email}
             onChange={(e) => {
@@ -102,7 +111,7 @@ function Register() {
             }}
             className={`form-control ${roleError ? "is-invalid" : ""}`}
           >
-            <option selected disabled value="">
+            <option disabled value="">
               --Select--
             </option>
             <option value="admin">Admin</option>

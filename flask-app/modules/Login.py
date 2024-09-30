@@ -1,4 +1,5 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
+import re
 
 login_bp = Blueprint("login", __name__)
 
@@ -13,8 +14,8 @@ users = {
 def register():
     data = request.json
     email = data.get("email")
-    password = data.get("password")
-    role = data.get("role")
+    # password = data.get("password")
+    # role = data.get("role")
 
     if email in users:
         return jsonify({"msg": "This email is already registered."}), 400
@@ -30,8 +31,24 @@ def login():
     email = data.get("email")
     password = data.get("password")
 
+    if not email or not password:
+        return jsonify({"error": "Email and password are required."}), 400
+
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        return jsonify({"error": "Invalid email format."}), 400
+
     if email in users and users[email]["password"] == password:
+        session["user_id"] = email
         role = users[email]["role"]
+        session.permanent = True
+        # print("Current session:", session.get("user_id"))
         return jsonify({"msg": "Login successful!", "role": role}), 200
 
     return jsonify({"error": "Invalid credentials"}), 401
+
+
+@login_bp.route("/logout", methods=["POST"])
+def logout():
+    session.clear()
+    print("Logged out. Session:", session.get("user_id"))
+    return jsonify({"msg": "Logged out successfully!"}), 200

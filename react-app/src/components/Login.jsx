@@ -12,13 +12,20 @@ function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmission = async (event) => {
+  const emailRegrex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const handleLogin = async (event) => {
     event.preventDefault();
     let isValid = true;
 
     if (!email) {
       setEmailError("Please enter your email.");
       isValid = false;
+    } else if (!emailRegrex.test(email)) {
+      setEmailError("Please enter a valid email address.");
+      isValid = false;
+    } else {
+      setEmailError("");
     }
     if (!password) {
       setPasswordError("Please enter your password.");
@@ -32,6 +39,7 @@ function Login() {
           headers: {
             "Content-type": "application/json",
           },
+          credentials: "include",
           body: JSON.stringify({ email, password }),
         });
         const responseData = await response.json();
@@ -57,11 +65,11 @@ function Login() {
   return (
     <div className="addUser">
       <h3> Welcome Back! </h3>
-      <form className="addUserForm" onSubmit={handleSubmission}>
+      <form className="addUserForm" onSubmit={handleLogin}>
         <div className="inputGroup">
           <label htmlFor="email">Username</label>
           <input
-            type="email"
+            type="text"
             id="email"
             value={email}
             onChange={(e) => {
@@ -95,7 +103,13 @@ function Login() {
               className="btn btn-primary"
               disabled={loading}
             >
-              LOGIN {loading && <div className="spinner"></div>}
+              {loading ? (
+                <>
+                  <div className="spinner"></div> Logging in...
+                </>
+              ) : (
+                "LOGIN"
+              )}
             </button>
           </div>
         </div>

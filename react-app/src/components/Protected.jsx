@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
 const Protected = ({ element }) => {
-  const { isAuthenticated, userRole } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   return isAuthenticated ? element : <Navigate to="/" />;
 };

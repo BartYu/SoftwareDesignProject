@@ -12,8 +12,16 @@ const Navbar = () => {
   const { userRole } = useAuth();
 
   const { logout } = useAuth();
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    try {
+      await fetch("http://localhost:5000/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      logout();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
     navigate("/");
   };
 
