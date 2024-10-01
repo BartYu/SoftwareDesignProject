@@ -4,6 +4,7 @@ import DatePicker from "react-multi-date-picker";
 import Select from "react-select";
 import { usStates } from "./states";
 import Navbar from "./Navbar";
+import { Helmet } from "react-helmet";
 
 const Profile = () => {
   const [fullName, setFullName] = useState("");
@@ -15,6 +16,8 @@ const Profile = () => {
   const [skills, setSkills] = useState([]);
   const [preferences, setPreferences] = useState("");
   const [selectedDates, setSelectedDates] = useState([]);
+  const [changes, hasChanges] = useState(false);
+  const [toastAlert, setToastAlert] = useState(false);
 
   const skillOptions = [
     { value: "Adaptive", label: "Adaptive" },
@@ -45,7 +48,7 @@ const Profile = () => {
         setAddress2(showProfile.address2 || "");
         setCity(showProfile.city);
         setSelectedState(showProfile.state);
-        setZipCode(showProfile.zip);
+        setZipCode(showProfile.zipcode);
         setSkills(
           showProfile.skills.map((skill) => ({ value: skill, label: skill }))
         );
@@ -55,7 +58,7 @@ const Profile = () => {
             const localDate = new Date(date);
             return new Date(
               localDate.getTime() + localDate.getTimezoneOffset() * 60000
-            ); // Adjust for timezone offset
+            );
           })
         );
       } else {
@@ -74,10 +77,10 @@ const Profile = () => {
     event.preventDefault();
     setErrors({});
 
-    console.log("Details of Selected Dates:", selectedDates);
-    selectedDates.forEach((date, index) => {
-      console.log(`Date ${index}:`, date);
-    });
+    // console.log("Details of Selected Dates:", selectedDates);
+    // selectedDates.forEach((date, index) => {
+    //   console.log(`Date ${index}:`, date);
+    // });
 
     const profileData = {
       name: fullName,
@@ -85,10 +88,12 @@ const Profile = () => {
       address2: address2,
       city: city,
       state: selectedState,
-      zip: zipCode,
+      zipcode: zipCode,
       skills: skills.map((skill) => skill.value),
       preferences: preferences,
-      dates: selectedDates.map((date) => date.format("MM/DD/YYYY")),
+      dates: selectedDates.map((date) => {
+        return date instanceof Date ? date.toLocaleDateString("en-US") : date;
+      }),
     };
     setLoading(true);
     try {
@@ -108,7 +113,9 @@ const Profile = () => {
         //alert("Error:" + JSON.stringify(responseData.errors));
         return;
       }
-      alert("Profile saved successfully!");
+      setToastAlert(true);
+      setTimeout(() => setToastAlert(false), 3500);
+      hasChanges(false);
       fetchProfile();
     } catch (error) {
       console.error("Error saving profile changes.", error);
@@ -117,28 +124,11 @@ const Profile = () => {
     }
   };
 
-  const handleZip = (event) => {
-    const { key } = event;
-    const allowedKeys = [
-      "Backspace",
-      "Delete",
-      "Tab",
-      "Escape",
-      "Enter",
-      "ArrowUp",
-      "ArrowDown",
-      "ArrowLeft",
-      "ArrowRight",
-    ];
-
-    // Allow numbers and hyphen only
-    if (!allowedKeys.includes(key) && !/[\d-]/.test(key)) {
-      event.preventDefault(); // Prevent the input if not allowed
-    }
-  };
-
   return (
     <div className="dashboard">
+      <Helmet>
+        <title>Profile Page</title>
+      </Helmet>
       <Navbar />
       <div className="userProfile">
         <h3>Personal Information</h3>
@@ -158,8 +148,13 @@ const Profile = () => {
               maxLength="50"
               value={fullName}
               onChange={(e) => {
-                setFullName(e.target.value);
-                if (errors.name) setErrors((prev) => ({ ...prev, name: null }));
+                const value = e.target.value;
+                if (/^[a-zA-Z\s]*$/.test(value)) {
+                  setFullName(value);
+                  if (errors.name)
+                    setErrors((prev) => ({ ...prev, name: null }));
+                  hasChanges(true);
+                }
               }}
               className={`form-control ${errors.name ? "is-invalid" : ""}`}
             />
@@ -182,6 +177,7 @@ const Profile = () => {
                 setAddress1(e.target.value);
                 if (errors.address1)
                   setErrors((prev) => ({ ...prev, address1: null }));
+                hasChanges(true);
               }}
               className={`form-control ${errors.address1 ? "is-invalid" : ""}`}
             />
@@ -203,7 +199,10 @@ const Profile = () => {
               id="address2"
               maxLength="100"
               value={address2}
-              onChange={(e) => setAddress2(e.target.value)}
+              onChange={(e) => {
+                setAddress2(e.target.value);
+                hasChanges(true);
+              }}
             />
           </div>
 
@@ -218,8 +217,13 @@ const Profile = () => {
               maxLength="100"
               value={city}
               onChange={(e) => {
-                setCity(e.target.value);
-                if (errors.city) setErrors((prev) => ({ ...prev, city: null }));
+                const value = e.target.value;
+                if (/^[a-zA-Z\s]*$/.test(value)) {
+                  setCity(value);
+                  if (errors.city)
+                    setErrors((prev) => ({ ...prev, city: null }));
+                  hasChanges(true);
+                }
               }}
               className={`form-control ${errors.city ? "is-invalid" : ""}`}
             />
@@ -240,6 +244,7 @@ const Profile = () => {
                 setSelectedState(e.target.value);
                 if (errors.state)
                   setErrors((prev) => ({ ...prev, state: null }));
+                hasChanges(true);
               }}
               className={`form-select ${errors.state ? "is-invalid" : ""}`}
             >
@@ -257,24 +262,30 @@ const Profile = () => {
 
           {/* Zip Code */}
           <div className="col-md-3">
-            <label htmlFor="zip" className="form-label">
+            <label htmlFor="zipcode" className="form-label">
               Zip code *
             </label>
             <input
               type="text"
-              id="zip"
+              id="zipcode"
               pattern="\d{5}(-\d{4})?"
               maxLength="10"
               value={zipCode}
               onChange={(e) => {
-                setZipCode(e.target.value);
-                if (errors.zip) setErrors((prev) => ({ ...prev, zip: null }));
+                const value = e.target.value;
+                if (/^[0-9-]*$/.test(value)) {
+                  setZipCode(value);
+                  if (errors.zipcode)
+                    setErrors((prev) => ({ ...prev, zipcode: null }));
+                  hasChanges(true);
+                }
               }}
-              onKeyDown={handleZip}
-              className={`form-control ${errors.zip ? "is-invalid" : ""}`}
+              className={`form-control ${errors.zipcode ? "is-invalid" : ""}`}
             />
-            {errors.zip && (
-              <div className="invalid-feedback">{errors.zip.join(", ")}</div>
+            {errors.zipcode && (
+              <div className="invalid-feedback">
+                {errors.zipcode.join(", ")}
+              </div>
             )}
           </div>
 
@@ -292,6 +303,7 @@ const Profile = () => {
                 setSkills(selectedOptions || []);
                 if (selectedOptions && selectedOptions.length > 0) {
                   setErrors((prev) => ({ ...prev, skills: null }));
+                  hasChanges(true);
                 }
               }}
               className={errors.skills ? "is-invalid" : ""}
@@ -311,7 +323,10 @@ const Profile = () => {
               id="preferences"
               rows="3"
               value={preferences}
-              onChange={(e) => setPreferences(e.target.value)}
+              onChange={(e) => {
+                setPreferences(e.target.value);
+                hasChanges(true);
+              }}
             ></textarea>
           </div>
 
@@ -330,6 +345,7 @@ const Profile = () => {
                   setSelectedDates(dates || []);
                   if (dates && dates.length > 0) {
                     setErrors((prev) => ({ ...prev, dates: null }));
+                    hasChanges(true);
                   }
                 }}
                 className="date-picker"
@@ -340,12 +356,14 @@ const Profile = () => {
                 type="button"
                 className="btn btn-danger clear-dates"
                 onClick={() => {
+                  hasChanges(true);
                   const updatedDates = selectedDates.slice(0, -1);
                   setSelectedDates(updatedDates);
                   if (updatedDates.length === 0) {
                     setErrors((prev) => ({ ...prev, dates: null }));
                   }
                 }}
+                disabled={selectedDates.length === 0}
               >
                 Remove
               </button>
@@ -359,7 +377,7 @@ const Profile = () => {
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={loading}
+              disabled={loading || !changes}
             >
               {loading ? (
                 <>
@@ -371,6 +389,25 @@ const Profile = () => {
             </button>
           </div>
         </form>
+      </div>
+      <div className={`toast-container position-fixed bottom-0 end-0 p-3`}>
+        <div
+          id="saveAlert"
+          className={`toast ${toastAlert ? "show" : "hide"} bg-info fw-bold`}
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div className="d-flex">
+            <div className="toast-body">Profile saved successfully!</div>
+            <button
+              type="button"
+              className="btn-close me-2 m-auto"
+              onClick={() => setToastAlert(false)}
+              aria-label="Close"
+            ></button>
+          </div>
+        </div>
       </div>
     </div>
   );

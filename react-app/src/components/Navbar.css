@@ -87,6 +87,5 @@
 }
 
 .dropdown-item:hover {
-  background-color: #f8f9fa;
-  color: #0056b3;
+  color: rgb(140, 155, 255);
 }

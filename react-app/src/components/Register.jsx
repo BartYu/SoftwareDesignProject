@@ -1,6 +1,7 @@
 import "./Register.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Helmet } from "react-helmet";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -66,6 +67,9 @@ function Register() {
 
   return (
     <div className="addUser">
+      <Helmet>
+        <title>Register Page</title>
+      </Helmet>
       <h3> Create Account </h3>
       <form className="addUserForm" onSubmit={handleSubmission}>
         <div className="inputGroup">
@@ -75,7 +79,7 @@ function Register() {
             id="email"
             value={email}
             onChange={(e) => {
-              setEmail(e.target.value);
+              setEmail(e.target.value.toLowerCase());
               if (emailError) setEmailError("");
             }}
             autoComplete="off"

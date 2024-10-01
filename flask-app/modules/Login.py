@@ -39,10 +39,10 @@ def login():
 
     if email in users and users[email]["password"] == password:
         session["user_id"] = email
-        role = users[email]["role"]
-        session.permanent = True
-        # print("Current session:", session.get("user_id"))
-        return jsonify({"msg": "Login successful!", "role": role}), 200
+        if "user_id" in session:
+            role = users[email]["role"]
+            session.permanent = True
+            return jsonify({"msg": "Login successful!", "role": role}), 200
 
     return jsonify({"error": "Invalid credentials"}), 401
 

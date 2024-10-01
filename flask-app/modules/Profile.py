@@ -14,8 +14,15 @@ ma = Marshmallow(App)
 
 class datesFormat(fields.Date):
     def _deserialize(self, value, attr, data, **kwargs):
+        # print("Dates received: ", value)
         try:
-            return datetime.strptime(value, "%m/%d/%Y").date()
+            if isinstance(value, int):
+                timestamp = value / 1000
+                date_value = datetime.fromtimestamp(timestamp).date()
+            else:
+                date_value = datetime.strptime(value, "%m/%d/%Y").date()
+
+            return date_value
         except ValueError:
             raise ValidationError("Invalid date format. Expected MM/DD/YYYY.")
 
@@ -50,7 +57,7 @@ class ProfileSchema(ma.Schema):
             "validator_failed": "Select your State.",
         },
     )
-    zip = fields.String(
+    zipcode = fields.String(
         required=True,
         validate=lambda s: re.match(r"^\d{5}(-\d{4})?$", s) is not None,
         error_messages={
@@ -101,10 +108,10 @@ def profile():
             "address2": data.get("address2"),
             "city": data.get("city"),
             "state": data.get("state"),
-            "zip": data.get("zip"),
+            "zipcode": data.get("zipcode"),
             "skills": data.get("skills"),
             "preferences": data.get("preferences"),
-            "dates": data.get("dates"),
+            "dates": sorted(data.get("dates", [])),
         }
         return jsonify({"msg": "Profile saved successfully!"}), 201
 

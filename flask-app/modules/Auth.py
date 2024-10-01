@@ -7,7 +7,8 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         print("Current session:", session.get("user_id"))
         if "user_id" not in session:
-            return jsonify({"error": "Authentication required."}), 401
+            print("Session not found.")
+            return jsonify({"redirect": "No session."}), 401
         return f(*args, **kwargs)
 
     return decorated_function

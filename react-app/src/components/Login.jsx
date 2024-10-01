@@ -2,6 +2,7 @@ import "./login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "./AuthContext";
+import { Helmet } from "react-helmet";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -64,6 +65,9 @@ function Login() {
 
   return (
     <div className="addUser">
+      <Helmet>
+        <title>Login Page</title>
+      </Helmet>
       <h3> Welcome Back! </h3>
       <form className="addUserForm" onSubmit={handleLogin}>
         <div className="inputGroup">
@@ -73,7 +77,7 @@ function Login() {
             id="email"
             value={email}
             onChange={(e) => {
-              setEmail(e.target.value);
+              setEmail(e.target.value.toLowerCase());
               if (emailError) setEmailError("");
             }}
             autoComplete="off"
