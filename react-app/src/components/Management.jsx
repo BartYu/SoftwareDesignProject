@@ -3,6 +3,7 @@ import { useState } from "react";
 import DatePicker from "react-multi-date-picker";
 import Select from "react-select";
 import Navbar from "./Navbar";
+import { Helmet } from "react-helmet";
 
 const REQUIRED_SKILLS_LIST = [
   { value: "Adaptive", label: "Adaptive" },
@@ -75,6 +76,9 @@ const Management = () => {
 
   return (
     <div className="dashboard">
+      <Helmet>
+        <title>Event Management</title>
+      </Helmet>
       <Navbar />
       <div className="management">
         <h3>Event Information</h3>

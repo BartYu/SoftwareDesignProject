@@ -1,7 +1,6 @@
-from datetime import datetime
 from flask import Blueprint, request, jsonify, session
 from flask_marshmallow import Marshmallow
-from marshmallow import fields, validates, ValidationError
+from marshmallow import fields, ValidationError
 from datetime import datetime
 from .Auth import login_required
 import re
@@ -88,13 +87,13 @@ profile_schema = ProfileSchema()
 user_profile = {}
 
 
-@profile_bp.route("/profile", methods=["GET", "POST"])
+@profile_bp.route("/profile", methods=["GET", "PUT"])
 @login_required
 def profile():
     user_id = session.get("user_id")
     # print("Profile session:", session.get("user_id"))
 
-    if request.method == "POST":
+    if request.method == "PUT":
         # print("Request JSON:", request.json)
         try:
             data = profile_schema.load(request.json)
@@ -113,11 +112,11 @@ def profile():
             "preferences": data.get("preferences"),
             "dates": sorted(data.get("dates", [])),
         }
-        return jsonify({"msg": "Profile saved successfully!"}), 201
+        return jsonify({"msg": "Profile saved successfully!"}), 200
 
     if request.method == "GET":
         profile_info = user_profile.get(user_id)
-        # print("Profile:", profile_info)
+        print("Profile:", profile_info)
         if profile_info:
             return jsonify(profile_info), 200
         return jsonify({"msg": "Profile not found."}), 404

@@ -2,7 +2,7 @@ import "./Profile.css";
 import { useState, useEffect } from "react";
 import DatePicker from "react-multi-date-picker";
 import Select from "react-select";
-import { usStates } from "./states";
+import { usStates, skillOptions } from "./profile-info";
 import Navbar from "./Navbar";
 import { Helmet } from "react-helmet";
 
@@ -19,19 +19,7 @@ const Profile = () => {
   const [changes, hasChanges] = useState(false);
   const [toastAlert, setToastAlert] = useState(false);
 
-  const skillOptions = [
-    { value: "Adaptive", label: "Adaptive" },
-    { value: "Creative", label: "Creative" },
-    { value: "Problem-Solving", label: "Problem-Solving" },
-    { value: "Patience", label: "Patience" },
-    { value: "Teamwork", label: "Teamwork" },
-    { value: "Compassion", label: "Compassion" },
-    { value: "Communication", label: "Communication" },
-    { value: "Leadership", label: "Leadership" },
-  ];
-
   const [errors, setErrors] = useState({});
-
   const [loading, setLoading] = useState(false);
 
   const fetchProfile = async () => {
@@ -98,7 +86,7 @@ const Profile = () => {
     setLoading(true);
     try {
       const response = await fetch("http://localhost:5000/user/profile", {
-        method: "POST",
+        method: "PUT",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",

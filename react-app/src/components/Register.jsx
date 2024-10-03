@@ -108,7 +108,7 @@ function Register() {
           <label htmlFor="role">Role</label>
           <select
             id="role"
-            value={role}
+            value={role.toLowerCase}
             onChange={(e) => {
               setRole(e.target.value);
               if (e.target.value) setRoleError("");

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./VolunteerHistory.css"; // Create this CSS file for styling
 import Navbar from "./Navbar";
+import { Helmet } from "react-helmet";
 
 const VolunteerHistory = () => {
   const [volunteerData, setVolunteerData] = useState([
@@ -27,6 +28,9 @@ const VolunteerHistory = () => {
 
   return (
     <div className="history">
+      <Helmet>
+        <title>Event History</title>
+      </Helmet>
       <Navbar />
       <div className="volunteer-history-container">
         <h1>Volunteer History</h1>

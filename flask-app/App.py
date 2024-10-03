@@ -14,9 +14,9 @@ def create_app():
 
     register_routes(app)
 
-    @app.route("/")
-    def home():
-        return "Back-end"
+    # @app.route("/")
+    # def home():
+    #     return "Back-end"
 
     return app
 
