@@ -1,35 +1,32 @@
-import React, { useState } from "react";
-import "./VolunteerHistory.css"; // Create this CSS file for styling
+import React, { useState, useEffect } from "react";
+import "./VolunteerHistory.css"; // Ensure this is updated with any new styles
 import Navbar from "./Navbar";
 
 const VolunteerHistory = () => {
-  const [volunteerData, setVolunteerData] = useState([
-    {
-      eventName: "Community Cleanup",
-      eventDescription: "Cleaning up the local park.",
-      location: "Central Park",
-      requiredSkills: "Teamwork, Communication",
-      urgency: "High",
-      eventDate: "2024-09-20",
-      participationStatus: "Completed",
-    },
-    {
-      eventName: "Food Drive",
-      eventDescription: "Collecting food for the needy.",
-      location: "Downtown Community Center",
-      requiredSkills: "Organization, Communication",
-      urgency: "Medium",
-      eventDate: "2024-08-15",
-      participationStatus: "Pending",
-    },
-    // Add more volunteer data as needed
-  ]);
+  const [volunteerData, setVolunteerData] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchVolunteerData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/volunteers');
+        if (!response.ok) throw new Error("Failed to fetch volunteer data");
+        const data = await response.json();
+        setVolunteerData(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchVolunteerData();
+  }, []);
 
   return (
     <div className="history">
       <Navbar />
       <div className="volunteer-history-container">
         <h1>Volunteer History</h1>
+        {error && <div className="error">{error}</div>}
         <table>
           <thead>
             <tr>
@@ -43,17 +40,23 @@ const VolunteerHistory = () => {
             </tr>
           </thead>
           <tbody>
-            {volunteerData.map((volunteer, index) => (
-              <tr key={index}>
-                <td>{volunteer.eventName}</td>
-                <td>{volunteer.eventDescription}</td>
-                <td>{volunteer.location}</td>
-                <td>{volunteer.requiredSkills}</td>
-                <td>{volunteer.urgency}</td>
-                <td>{volunteer.eventDate}</td>
-                <td>{volunteer.participationStatus}</td>
+            {volunteerData.length > 0 ? (
+              volunteerData.map((volunteer, index) => (
+                <tr key={index} className={volunteer.participationStatus === "Completed" ? "completed" : "pending"}>
+                  <td>{volunteer.eventName}</td>
+                  <td>{volunteer.eventDescription}</td>
+                  <td>{volunteer.location}</td>
+                  <td>{volunteer.requiredSkills}</td>
+                  <td>{volunteer.urgency}</td>
+                  <td>{volunteer.eventDate}</td>
+                  <td>{volunteer.participationStatus}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7">No volunteer events found.</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
@@ -62,3 +65,4 @@ const VolunteerHistory = () => {
 };
 
 export default VolunteerHistory;
+
