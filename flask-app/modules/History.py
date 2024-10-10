@@ -1,6 +1,7 @@
-from flask import Flask, jsonify, request
+# app/History.py
+from flask import Blueprint, jsonify, request
 
-app = Flask(__name__)
+history_bp = Blueprint('history', __name__)
 
 # Sample volunteer data
 volunteer_data = [
@@ -38,12 +39,12 @@ def validate_volunteer_data(data):
     return errors
 
 # Route to fetch volunteer data
-@app.route('/api/volunteers', methods=['GET'])
+@history_bp.route('/volunteers', methods=['GET'])
 def get_volunteers():
     return jsonify(volunteer_data), 200
 
-# Route to add new volunteer data (for demonstration)
-@app.route('/api/volunteers', methods=['POST'])
+# Route to add new volunteer data
+@history_bp.route('/volunteers', methods=['POST'])
 def add_volunteer():
     new_volunteer = request.json
     errors = validate_volunteer_data(new_volunteer)
@@ -52,6 +53,3 @@ def add_volunteer():
 
     volunteer_data.append(new_volunteer)
     return jsonify(new_volunteer), 201
-
-if __name__ == '__main__':
-    app.run(debug=True)
