@@ -1,30 +1,20 @@
-import React, { useState } from "react";
-import "./VolunteerHistory.css"; // Create this CSS file for styling
-import Navbar from "./Navbar";
+import React, { useEffect, useState } from "react";
+import "./VolunteerHistory.css"; 
+import Navbar from "./Navbar";  // Ensure this component exists
 import { Helmet } from "react-helmet";
 
 const VolunteerHistory = () => {
-  const [volunteerData, setVolunteerData] = useState([
-    {
-      eventName: "Community Cleanup",
-      eventDescription: "Cleaning up the local park.",
-      location: "Central Park",
-      requiredSkills: "Teamwork, Communication",
-      urgency: "High",
-      eventDate: "2024-09-20",
-      participationStatus: "Completed",
-    },
-    {
-      eventName: "Food Drive",
-      eventDescription: "Collecting food for the needy.",
-      location: "Downtown Community Center",
-      requiredSkills: "Organization, Communication",
-      urgency: "Medium",
-      eventDate: "2024-08-15",
-      participationStatus: "Pending",
-    },
-    // Add more volunteer data as needed
-  ]);
+  const [volunteerData, setVolunteerData] = useState([]);
+
+  // Fetch volunteer history data from the backend
+  useEffect(() => {
+    const fetchVolunteerHistory = async () => {
+      const response = await fetch('/api/volunteer-history');
+      const data = await response.json();
+      setVolunteerData(data);
+    };
+    fetchVolunteerHistory();
+  }, []);
 
   return (
     <div className="history">
