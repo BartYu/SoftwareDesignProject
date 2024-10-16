@@ -82,7 +82,7 @@ event_info = {}
 def management():
     user_id = session.get("user_id")
 
-    if request.method == "POST":
+    if request.method == "PUT":
         try:
             data = management_schema.load(request.json)
         except ValidationError as error:
