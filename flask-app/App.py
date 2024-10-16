@@ -10,7 +10,7 @@ def create_app():
     app.secret_key = "gnaohnautcosc"
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=1)
 
-    CORS(app, supports_credentials=True)
+    CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*", "methods": ["GET", "POST"]}})
 
     register_routes(app)
 
