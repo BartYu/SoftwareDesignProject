@@ -1,10 +1,10 @@
-# app/History.py
+# history.py
 from flask import Blueprint, jsonify, request
 
 history_bp = Blueprint('history', __name__)
 
-# Sample volunteer data
-volunteer_data = [
+# Hardcoded volunteer history data
+volunteer_history = [
     {
         "eventName": "Community Cleanup",
         "eventDescription": "Cleaning up the local park.",
@@ -25,31 +25,19 @@ volunteer_data = [
     },
 ]
 
-# Validation function
-def validate_volunteer_data(data):
-    errors = {}
-    if not data.get("eventName"):
-        errors["eventName"] = "Event name is required."
-    if not data.get("eventDescription"):
-        errors["eventDescription"] = "Event description is required."
-    if not data.get("location"):
-        errors["location"] = "Location is required."
-    if not data.get("eventDate"):
-        errors["eventDate"] = "Event date is required."
-    return errors
+@history_bp.route('/volunteer-history', methods=['GET'])
+def get_volunteer_history():
+    return jsonify(volunteer_history)
 
-# Route to fetch volunteer data
-@history_bp.route('/volunteers', methods=['GET'])
-def get_volunteers():
-    return jsonify(volunteer_data), 200
+@history_bp.route('/volunteer-history', methods=['POST'])
+def add_volunteer_event():
+    data = request.json
+    required_fields = ["eventName", "eventDescription", "location", "requiredSkills", "urgency", "eventDate", "participationStatus"]
 
-# Route to add new volunteer data
-@history_bp.route('/volunteers', methods=['POST'])
-def add_volunteer():
-    new_volunteer = request.json
-    errors = validate_volunteer_data(new_volunteer)
-    if errors:
-        return jsonify({"errors": errors}), 400
+    # Validate required fields
+    for field in required_fields:
+        if field not in data:
+            return jsonify({"error": f"{field} is required"}), 400
 
-    volunteer_data.append(new_volunteer)
-    return jsonify(new_volunteer), 201
+    volunteer_history.append(data)
+    return jsonify(data), 201
