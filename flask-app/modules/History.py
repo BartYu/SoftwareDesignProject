@@ -1,4 +1,3 @@
-# history.py
 from flask import Blueprint, jsonify, request
 
 history_bp = Blueprint('history', __name__)
@@ -38,6 +37,7 @@ def add_volunteer_event():
     for field in required_fields:
         if field not in data:
             return jsonify({"error": f"{field} is required"}), 400
-
+    if field not in data:
+            return jsonify({"error": f"{field} is required"}), 400
     volunteer_history.append(data)
     return jsonify(data), 201
