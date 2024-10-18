@@ -1,8 +1,6 @@
-
 import "./VolunteerHistory.css"; // Import your CSS file
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-
 
 function VolunteerHistory() {
   const [history, setHistory] = useState([]);
@@ -33,26 +31,41 @@ function VolunteerHistory() {
   }, []);
 
   return (
-    <div className="volunteer-history-container"> {/* Use the container class */}
+    <div className="volunteer-history-container">
       <Helmet>
         <title>Volunteer History</title>
       </Helmet>
       <h3>Your Volunteer History</h3>
       {loading && <div>Loading...</div>}
       {error && <div className="error">{error}</div>}
-      <ul>
-        {history.map((event, index) => (
-          <li key={index}>
-            <h4>{event.eventName}</h4>
-            <p>{event.eventDescription}</p>
-            <p>Location: {event.location}</p>
-            <p>Skills Required: {event.requiredSkills}</p>
-            <p>Urgency: {event.urgency}</p>
-            <p>Date: {event.eventDate}</p>
-            <p>Status: {event.participationStatus}</p>
-          </li>
-        ))}
-      </ul>
+      {!loading && !error && (
+        <table>
+          <thead>
+            <tr>
+              <th>Event Name</th>
+              <th>Description</th>
+              <th>Location</th>
+              <th>Skills Required</th>
+              <th>Urgency</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {history.map((event, index) => (
+              <tr key={index}>
+                <td>{event.eventName}</td>
+                <td>{event.eventDescription}</td>
+                <td>{event.location}</td>
+                <td>{event.requiredSkills}</td>
+                <td>{event.urgency}</td>
+                <td>{event.eventDate}</td>
+                <td>{event.participationStatus}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
