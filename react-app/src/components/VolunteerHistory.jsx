@@ -1,5 +1,8 @@
+
+import "./VolunteerHistory.css"; // Import your CSS file
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+
 
 function VolunteerHistory() {
   const [history, setHistory] = useState([]);
@@ -11,8 +14,8 @@ function VolunteerHistory() {
     const fetchHistory = async () => {
       try {
         const response = await fetch("http://localhost:5005/api/volunteer-history", {
-          method: "GET", // Ensure the GET method is specified
-          credentials: "include", // Include credentials for session management
+          method: "GET",
+          credentials: "include",
         });
 
         if (!response.ok) throw new Error("Failed to fetch history");
@@ -30,7 +33,7 @@ function VolunteerHistory() {
   }, []);
 
   return (
-    <div>
+    <div className="volunteer-history-container"> {/* Use the container class */}
       <Helmet>
         <title>Volunteer History</title>
       </Helmet>
