@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./calendar.css";
-import { events as availableEvents } from "./user-event-data";
 import Navbar from "./Navbar";
 import { Helmet } from "react-helmet";
 
@@ -9,12 +8,28 @@ const daysInWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState([]);
+  const [availableEvents, setAvailableEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedEventId, setSelectedEventId] = useState(null);
 
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/calendar/events");
+        const data = await response.json();
+        setAvailableEvents(data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
   const getDaysInMonth = (month, year) =>
     new Date(year, month + 1, 0).getDate();
+  
   const getFirstDayOfMonth = (month, year) => new Date(year, month, 1).getDay();
 
   const changeMonth = (delta) => {
