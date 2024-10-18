@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from marshmallow import Schema, fields, validate, ValidationError
 
 history_bp = Blueprint('history', __name__)
 
@@ -24,19 +25,27 @@ volunteer_history = [
     },
 ]
 
+class VolunteerEventSchema(Schema):
+    eventName = fields.String(required=True)
+    eventDescription = fields.String(required=True)
+    location = fields.String(required=True)
+    requiredSkills = fields.String(required=True)
+    urgency = fields.String(required=True, validate=validate.OneOf(["Low", "Medium", "High"]))
+    eventDate = fields.String(required=True)  # You might want to use fields.Date for better date handling
+    participationStatus = fields.String(required=True)
+
 @history_bp.route('/volunteer-history', methods=['GET'])
 def get_volunteer_history():
     return jsonify(volunteer_history)
 
 @history_bp.route('/volunteer-history', methods=['POST'])
 def add_volunteer_event():
-    data = request.json
-    required_fields = ["eventName", "eventDescription", "location", "requiredSkills", "urgency", "eventDate", "participationStatus"]
+    schema = VolunteerEventSchema()
 
-    # Validate required fields
-    for field in required_fields:
-        if field not in data:
-            return jsonify({"error": f"{field} is required"}), 400
-            
-    volunteer_history.append(data)
-    return jsonify(data), 201
+    try:
+        # Validate and deserialize input data
+        data = schema.load(request.json)
+        volunteer_history.append(data)
+        return jsonify(data), 201
+    except ValidationError as err:
+        return jsonify({"error": err.messages}), 400
