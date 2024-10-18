@@ -56,19 +56,15 @@ class ManagementSchema(ma.Schema):
         },
     )
 
-    urgency = fields.List(
-        fields.String(),
+    urgency = fields.String(
         required=True,
-        validate=lambda s: len(s) > 0,
         error_messages={
             "validator_failed": "Select at least 1 urgency option.",
         },
     )
 
-    date = fields.List(
-        datesFormat(),
+    date = fields.Number(
         required=True,
-        validate=lambda s: len(s) > 0,
         error_messages={
             "validator_failed": "Select at least a date.",
         },
@@ -77,12 +73,11 @@ class ManagementSchema(ma.Schema):
 management_schema = ManagementSchema()
 event_info = {}
 
-@management_bp.route("/management", methods=["GET", "PUT"])
-@login_required
+@management_bp.route("/management", methods=["GET", "POST"])
 def management():
     user_id = session.get("user_id")
 
-    if request.method == "PUT":
+    if request.method == "POST":
         try:
             data = management_schema.load(request.json)
         except ValidationError as error:
