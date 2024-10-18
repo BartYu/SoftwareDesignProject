@@ -2,7 +2,7 @@
   --bs-bg-opacity: 1;
   background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity)) !important;
   font-weight: 555;
-  padding: -20px;
+  min-height: 55px;
 }
 
 .hover-dropdown:hover .dropdown-menu {
@@ -26,6 +26,7 @@
   text-align: center;
   justify-content: center;
   min-height: 55px;
+  min-width: 120px;
 }
 .nav-link span {
   margin: -2px;
@@ -86,6 +87,5 @@
 }
 
 .dropdown-item:hover {
-  background-color: #f8f9fa;
-  color: #0056b3;
+  color: rgb(140, 155, 255);
 }

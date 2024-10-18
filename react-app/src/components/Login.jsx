@@ -2,6 +2,7 @@ import "./login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "./AuthContext";
+import { Helmet } from "react-helmet";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -12,13 +13,20 @@ function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmission = async (event) => {
+  const emailRegrex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const handleLogin = async (event) => {
     event.preventDefault();
     let isValid = true;
 
     if (!email) {
       setEmailError("Please enter your email.");
       isValid = false;
+    } else if (!emailRegrex.test(email)) {
+      setEmailError("Please enter a valid email address.");
+      isValid = false;
+    } else {
+      setEmailError("");
     }
     if (!password) {
       setPasswordError("Please enter your password.");
@@ -32,6 +40,7 @@ function Login() {
           headers: {
             "Content-type": "application/json",
           },
+          credentials: "include",
           body: JSON.stringify({ email, password }),
         });
         const responseData = await response.json();
@@ -56,16 +65,19 @@ function Login() {
 
   return (
     <div className="addUser">
+      <Helmet>
+        <title>Login Page</title>
+      </Helmet>
       <h3> Welcome Back! </h3>
-      <form className="addUserForm" onSubmit={handleSubmission}>
+      <form className="addUserForm" onSubmit={handleLogin}>
         <div className="inputGroup">
           <label htmlFor="email">Username</label>
           <input
-            type="email"
+            type="text"
             id="email"
             value={email}
             onChange={(e) => {
-              setEmail(e.target.value);
+              setEmail(e.target.value.toLowerCase());
               if (emailError) setEmailError("");
             }}
             autoComplete="off"
@@ -95,7 +107,13 @@ function Login() {
               className="btn btn-primary"
               disabled={loading}
             >
-              LOGIN {loading && <div className="spinner"></div>}
+              {loading ? (
+                <>
+                  <div className="spinner"></div> Logging in...
+                </>
+              ) : (
+                "LOGIN"
+              )}
             </button>
           </div>
         </div>

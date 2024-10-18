@@ -1,6 +1,7 @@
 import "./Register.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Helmet } from "react-helmet";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,8 @@ function Register() {
   const [passwordError, setPasswordError] = useState("");
   const [roleError, setRoleError] = useState("");
 
+  const emailRegrex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const handleSubmission = async (event) => {
     event.preventDefault();
     let hasError = false;
@@ -20,6 +23,11 @@ function Register() {
     if (!email) {
       setEmailError("Please enter your email.");
       hasError = true;
+    } else if (!emailRegrex.test(email)) {
+      setEmailError("Please enter a valid email address.");
+      hasError = true;
+    } else {
+      setEmailError("");
     }
     if (!password) {
       setPasswordError("Please enter a password.");
@@ -45,11 +53,13 @@ function Register() {
           setLoading(false);
           return;
         }
+        alert("Registered successfully!");
         navigate("/");
       } catch (err) {
         setEmailError("An error occurred. Please try again.");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
   };
 
@@ -57,16 +67,19 @@ function Register() {
 
   return (
     <div className="addUser">
+      <Helmet>
+        <title>Register Page</title>
+      </Helmet>
       <h3> Create Account </h3>
       <form className="addUserForm" onSubmit={handleSubmission}>
         <div className="inputGroup">
           <label htmlFor="email">Email address</label>
           <input
-            type="email"
+            type="text"
             id="email"
             value={email}
             onChange={(e) => {
-              setEmail(e.target.value);
+              setEmail(e.target.value.toLowerCase());
               if (emailError) setEmailError("");
             }}
             autoComplete="off"
@@ -95,14 +108,14 @@ function Register() {
           <label htmlFor="role">Role</label>
           <select
             id="role"
-            value={role}
+            value={role.toLowerCase}
             onChange={(e) => {
               setRole(e.target.value);
               if (e.target.value) setRoleError("");
             }}
             className={`form-control ${roleError ? "is-invalid" : ""}`}
           >
-            <option selected disabled value="">
+            <option disabled value="">
               --Select--
             </option>
             <option value="admin">Admin</option>
