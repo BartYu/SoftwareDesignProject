@@ -31,7 +31,7 @@ class VolunteerEventSchema(Schema):
     location = fields.String(required=True)
     requiredSkills = fields.String(required=True)
     urgency = fields.String(required=True, validate=validate.OneOf(["Low", "Medium", "High"]))
-    eventDate = fields.String(required=True)  # You might want to use fields.Date for better date handling
+    eventDate = fields.String(required=True)  # Use fields.Date for better date handling if necessary
     participationStatus = fields.String(required=True)
 
 @history_bp.route('/volunteer-history', methods=['GET'])

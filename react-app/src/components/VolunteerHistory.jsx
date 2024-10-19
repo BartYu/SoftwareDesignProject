@@ -11,7 +11,7 @@ function VolunteerHistory() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const response = await fetch("http://localhost:5005/api/volunteer-history", {
+        const response = await fetch("http://localhost:5005/volunteer-history", {
           method: "GET",
           credentials: "include",
         });
@@ -71,4 +71,3 @@ function VolunteerHistory() {
 }
 
 export default VolunteerHistory;
-
