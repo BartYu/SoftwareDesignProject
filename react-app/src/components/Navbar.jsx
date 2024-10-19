@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { notifications } from "./notif-data";
 import { useAuth } from "./AuthContext";
 import "./Navbar.css";
 
@@ -8,10 +7,25 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
-  const hasNotifications = notifications.length > 0;
-  const { userRole } = useAuth();
+  const [notifications, setNotifications] = useState([]);
+  const [hasNotifications, setHasNotifications] = useState(false);
+  const { userRole, logout } = useAuth();
 
-  const { logout } = useAuth();
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/notification/notif_events");
+        const data = await response.json();
+        setNotifications(data);
+        setHasNotifications(data.length > 0);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
   const handleLogout = async () => {
     try {
       await fetch("http://localhost:5000/auth/logout", {
