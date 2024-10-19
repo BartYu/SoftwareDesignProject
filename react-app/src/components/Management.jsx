@@ -37,7 +37,7 @@ const Management = () => {
   const [urgencyError, setUrgencyError] = useState([]);
   const [eventDateError, setEventDateError] = useState("");
 
-  const handleSubmission = (event) => {
+  const handleSubmission = async (event) => {
     event.preventDefault();
     let hasError = false;
 
@@ -70,9 +70,40 @@ const Management = () => {
 
     if (!hasError) {
       // Proceed with form submission logic
-      alert("Management form updated successfully!");
-    }
-  };
+      const eventData = {
+        name: eventName,
+        description: eventDescription,
+        location: location,
+        skills: requiredSkills.map((skill) => skill.value),
+        urgency: urgency?.value,
+        date:
+          eventDate instanceof Date
+            ? eventDate.toLocaleDateString("en-US")
+            : eventDate,
+      };
+
+      try {
+        const response = await fetch("http://localhost:5000/event/management", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
+        });
+        const responseData = await response.json();
+
+        if (!response.ok) {
+          console.error("Error from backend:", responseData);
+          return;
+        }
+      } catch (error) {
+        console.error("Error adding management info.", error);
+      }
+  } else {
+    return;
+  }  
+};
 
   return (
     <div className="dashboard">
@@ -185,7 +216,7 @@ const Management = () => {
             <label htmlFor="date" className="form-label">
               Event Date: *
             </label>
-            <DatePicker id="date" value={eventDate} onChange={setEventDate} />
+            <DatePicker id="date" value={eventDate} onChange={setEventDate} format={"MM/DD/YYYY"}/>
             {eventDateError && (
               <div className="error-message">{eventDateError}</div>
             )}
