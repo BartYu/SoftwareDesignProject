@@ -185,7 +185,7 @@ const Management = () => {
             <label htmlFor="date" className="form-label">
               Event Date: *
             </label>
-            <DatePicker id="date" value={eventDate} onChange={setEventDate} />
+            <DatePicker id="date" value={eventDate} onChange={setEventDate} format={"MM/DD/YYYY"}/>
             {eventDateError && (
               <div className="error-message">{eventDateError}</div>
             )}
