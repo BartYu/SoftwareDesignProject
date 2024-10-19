@@ -35,7 +35,7 @@ function Login() {
     if (isValid) {
       setLoading(true);
       try {
-        const response = await fetch("http://localhost:5000/auth/login", {
+        const response = await fetch("http://localhost:5005/auth/login", {
           method: "POST",
           headers: {
             "Content-type": "application/json",

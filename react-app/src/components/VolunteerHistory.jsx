@@ -1,68 +1,77 @@
-import React, { useState } from "react";
-import "./VolunteerHistory.css"; // Create this CSS file for styling
-import Navbar from "./Navbar";
+import "./VolunteerHistory.css"; // Import your CSS file
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import NavBar from "./NavBar"; // Import the NavBar component
 
-const VolunteerHistory = () => {
-  const [volunteerData, setVolunteerData] = useState([
-    {
-      eventName: "Community Cleanup",
-      eventDescription: "Cleaning up the local park.",
-      location: "Central Park",
-      requiredSkills: "Teamwork, Communication",
-      urgency: "High",
-      eventDate: "2024-09-20",
-      participationStatus: "Completed",
-    },
-    {
-      eventName: "Food Drive",
-      eventDescription: "Collecting food for the needy.",
-      location: "Downtown Community Center",
-      requiredSkills: "Organization, Communication",
-      urgency: "Medium",
-      eventDate: "2024-08-15",
-      participationStatus: "Pending",
-    },
-    // Add more volunteer data as needed
-  ]);
+function VolunteerHistory() {
+  const [history, setHistory] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  // Fetch volunteer history from the backend
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch("http://localhost:5005/volunteer-history", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch history");
+
+        const data = await response.json();
+        setHistory(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHistory();
+  }, []);
 
   return (
-    <div className="history">
-      <Helmet>
-        <title>Event History</title>
-      </Helmet>
-      <Navbar />
+    <div>
+      <NavBar /> {/* NavBar is now outside the main content div */}
       <div className="volunteer-history-container">
-        <h1>Volunteer History</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>Event Name</th>
-              <th>Event Description</th>
-              <th>Location</th>
-              <th>Required Skills</th>
-              <th>Urgency</th>
-              <th>Event Date</th>
-              <th>Participation Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {volunteerData.map((volunteer, index) => (
-              <tr key={index}>
-                <td>{volunteer.eventName}</td>
-                <td>{volunteer.eventDescription}</td>
-                <td>{volunteer.location}</td>
-                <td>{volunteer.requiredSkills}</td>
-                <td>{volunteer.urgency}</td>
-                <td>{volunteer.eventDate}</td>
-                <td>{volunteer.participationStatus}</td>
+        <Helmet>
+          <title>Volunteer History</title>
+        </Helmet>
+        <h3>Your Volunteer History</h3>
+        {loading && <div>Loading...</div>}
+        {error && <div className="error">{error}</div>}
+        {!loading && !error && (
+          <table>
+            <thead>
+              <tr>
+                <th>Event Name</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Skills Required</th>
+                <th>Urgency</th>
+                <th>Date</th>
+                <th>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {history.map((event, index) => (
+                <tr key={index}>
+                  <td>{event.eventName}</td>
+                  <td>{event.eventDescription}</td>
+                  <td>{event.location}</td>
+                  <td>{event.requiredSkills}</td>
+                  <td>{event.urgency}</td>
+                  <td>{event.eventDate}</td>
+                  <td>{event.participationStatus}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
-};
+}
 
 export default VolunteerHistory;
