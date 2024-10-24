@@ -2,11 +2,12 @@ import "./VolunteerHistory.css"; // Import your CSS file
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import NavBar from "./NavBar"; // Import the NavBar component
+import { format } from 'date-fns'; // Import date-fns for date formatting
 
-function VolunteerHistory() {
-  const [history, setHistory] = useState([]);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+const VolunteerHistory = () => {
+  const [history, setHistory] = useState([]); // State to hold volunteer history
+  const [error, setError] = useState(""); // State to hold any errors
+  const [loading, setLoading] = useState(true); // State to track loading status
 
   // Fetch volunteer history from the backend
   useEffect(() => {
@@ -20,27 +21,28 @@ function VolunteerHistory() {
         if (!response.ok) throw new Error("Failed to fetch history");
 
         const data = await response.json();
-        setHistory(data);
+        setHistory(data); // Update state with fetched data
       } catch (err) {
-        setError(err.message);
+        setError(err.message); // Set error message in state
+        console.error(err); // Log error for debugging
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading to false regardless of outcome
       }
     };
 
-    fetchHistory();
-  }, []);
+    fetchHistory(); // Call fetch function
+  }, []); // Empty dependency array to run effect once
 
   return (
     <div>
-      <NavBar /> {/* NavBar is now outside the main content div */}
+      <NavBar /> {/* Navigation bar component */}
       <div className="volunteer-history-container">
         <Helmet>
           <title>Volunteer History</title>
         </Helmet>
         <h3>Your Volunteer History</h3>
-        {loading && <div>Loading...</div>}
-        {error && <div className="error">{error}</div>}
+        {loading && <div className="spinner">Loading...</div>} {/* Loading state */}
+        {error && <div className="error">{error}</div>} {/* Error message */}
         {!loading && !error && (
           <table>
             <thead>
@@ -62,7 +64,7 @@ function VolunteerHistory() {
                   <td>{event.location}</td>
                   <td>{event.requiredSkills}</td>
                   <td>{event.urgency}</td>
-                  <td>{event.eventDate}</td>
+                  <td>{format(new Date(event.eventDate), 'MMMM dd, yyyy')}</td> {/* Format date */}
                   <td>{event.participationStatus}</td>
                 </tr>
               ))}
@@ -72,6 +74,7 @@ function VolunteerHistory() {
       </div>
     </div>
   );
-}
+};
 
 export default VolunteerHistory;
+

@@ -26,12 +26,12 @@ volunteer_history = [
 ]
 
 class VolunteerEventSchema(Schema):
-    eventName = fields.String(required=True)
+    eventName = fields.String(required=True, validate=validate.Length(min=1))
     eventDescription = fields.String(required=True)
     location = fields.String(required=True)
     requiredSkills = fields.String(required=True)
     urgency = fields.String(required=True, validate=validate.OneOf(["Low", "Medium", "High"]))
-    eventDate = fields.String(required=True)  # Use fields.Date for better date handling if necessary
+    eventDate = fields.Date(required=True)  # Ensure date validation
     participationStatus = fields.String(required=True)
 
 @history_bp.route('/volunteer-history', methods=['GET'])
@@ -45,7 +45,19 @@ def add_volunteer_event():
     try:
         # Validate and deserialize input data
         data = schema.load(request.json)
-        volunteer_history.append(data)
-        return jsonify(data), 201
+
+        # Check for duplicates
+        if any(event['eventName'] == data['eventName'] for event in volunteer_history):
+            return jsonify({"error": "Event already exists"}), 400
+
+        # Append data and convert date to string format
+        event_data = {
+            **data,
+            "eventDate": data['eventDate'].isoformat()  # Convert to string format
+        }
+        volunteer_history.append(event_data)
+        return jsonify(event_data), 201
     except ValidationError as err:
-        return jsonify({"error": err.messages}), 400
+        return jsonify({"errors": err.messages}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
