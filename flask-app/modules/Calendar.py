@@ -39,16 +39,20 @@ def get_events():
 
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({"error": "An error occurred while fetching events"}), 500
+        return jsonify({"error fetching"}), 500
 
-@calendar_bp.route("/events", methods=["POST"])
+@calendar_bp.route("/events/<int:event_id>", methods=["DELETE"])
 def delete_event(event_id):
     try:
-        cur = get_mysql_connection().cursor()
+        cur = calendar_bp.mysql.connection.cursor()
+        
+        cur.execute("SELECT * FROM event WHERE event_id = %s", (event_id,))
+        if cur.fetchone() is None:
+            return jsonify({"error": "Event not found"}), 404
+
         cur.execute("DELETE FROM event WHERE event_id = %s", (event_id,))
-        current_app.mysql.connection.commit()
+        calendar_bp.mysql.connection.commit()
         cur.close()
-        return jsonify({"message": "Event deleted successfully"}), 204
     except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({"error": "An error occurred while deleting the event"}), 500
+        calendar_bp.logger.error(f"Error deleting event {event_id}: {str(e)}")
+        return jsonify({"error": f"deletion error {str(e)}"}), 500

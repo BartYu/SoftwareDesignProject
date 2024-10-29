@@ -38,16 +38,37 @@ const Calendar = () => {
   };
 
   const handleDeleteEvent = async (id) => {
-    setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
+    const confirmDelete = window.confirm("Are you sure you want to delete this event?");
+    
+    if (confirmDelete) {
+        try {
+            const response = await fetch(`http://localhost:5005/calendar/events/${id}`, {
+                method: "DELETE",
+            });
 
-    try {
-      await fetch(`http://localhost:5005/calendar/events/${id}`, {
-        method: "DELETE",
-      });
-    } catch (error) {
-      console.error("Error deleting event:", error);
+            if (response.ok) {
+                fetchEvents();
+            } else {
+                console.error("Failed to delete event:", response.status, await response.json());
+            }
+        } catch (error) {
+            console.error("Error deleting event:", error);
+        }
     }
   };
+
+
+  const fetchEvents = async () => {
+      try {
+          const response = await fetch("http://localhost:5005/calendar/events");
+          const data = await response.json();
+          setEvents(data); 
+      } catch (error) {
+          console.error("Error fetching events:", error);
+      }
+  };
+
+
 
   const renderCalendar = () => {
     const month = currentDate.getMonth();
