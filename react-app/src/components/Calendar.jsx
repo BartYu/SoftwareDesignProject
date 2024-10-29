@@ -10,19 +10,22 @@ const Calendar = () => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch("http://localhost:5005/calendar/events");
-        const data = await response.json();
-        console.log("Fetched events:", data);
-        setEvents(data); 
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-
     fetchEvents();
   }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch("http://localhost:5005/calendar/events");
+      const data = await response.json();
+      const normalizedEvents = data.map(event => ({
+        ...event,
+        date: new Date(event.date).toISOString(), 
+      }));
+      setEvents(normalizedEvents);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
 
   const getDaysInMonth = (month, year) =>
     new Date(year, month + 1, 0).getDate();
@@ -41,34 +44,25 @@ const Calendar = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this event?");
     
     if (confirmDelete) {
-        try {
-            const response = await fetch(`http://localhost:5005/calendar/events/${id}`, {
-                method: "DELETE",
-            });
-
-            if (response.ok) {
-                fetchEvents();
-            } else {
-                console.error("Failed to delete event:", response.status, await response.json());
-            }
-        } catch (error) {
-            console.error("Error deleting event:", error);
-        }
+      setEvents((prevEvents) => prevEvents.filter(event => event.id !== id));
+  
+      try {
+        const response = await fetch(`http://localhost:5005/calendar/events/${id}`, {
+          method: "DELETE",
+          mode: "cors",
+        });
+  
+        if (!response.ok) {
+          fetchEvents(); 
+          console.error("Failed to delete event:", response.status, await response.json());
+        } 
+      } catch (error) {
+        console.error("Error deleting event:", error);
+        fetchEvents();
+      }
     }
   };
-
-
-  const fetchEvents = async () => {
-      try {
-          const response = await fetch("http://localhost:5005/calendar/events");
-          const data = await response.json();
-          setEvents(data); 
-      } catch (error) {
-          console.error("Error fetching events:", error);
-      }
-  };
-
-
+  
 
   const renderCalendar = () => {
     const month = currentDate.getMonth();
@@ -83,7 +77,7 @@ const Calendar = () => {
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
       const dayEvents = events.filter(
-        (event) => new Date(event.date).toDateString() === date.toDateString()
+        (event) => new Date(event.date).toUTCString().slice(0, 15) === date.toUTCString().slice(0, 15)
       );
 
       days.push(
@@ -130,21 +124,25 @@ const Calendar = () => {
           {events.length === 0 ? (
             <p>No events available.</p>
           ) : (
-            events.map((event) => (
-              <div key={event.id} className="event-item">
-                <div className="event-details">
-                  <strong>{event.title}</strong> on {new Date(event.date).toLocaleDateString()}
-                  <div>Urgency: {event.priority}</div> 
-                  <div>City: {event.city}</div> 
+            events.map((event) => {
+              const eventDate = new Date(event.date);
+              
+              return (
+                <div key={event.id} className="event-item">
+                  <div className="event-details">
+                    <strong>{event.title}</strong> on {eventDate.toLocaleDateString("en-US", { timeZone: "UTC" })}
+                    <div>Urgency: {event.priority}</div>
+                    <div>City: {event.city}</div>
+                  </div>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDeleteEvent(event.id)}
+                  >
+                    Delete
+                  </button>
                 </div>
-                <button
-                  className="delete-button"
-                  onClick={() => handleDeleteEvent(event.id)}
-                >
-                  Delete
-                </button>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>
