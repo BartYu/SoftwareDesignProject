@@ -14,7 +14,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch("http://localhost:5000/notification/notif_events");
+        const response = await fetch("http://localhost:5005/notification/notif_events");
         const data = await response.json();
         setNotifications(data);
         setHasNotifications(data.length > 0);
@@ -28,7 +28,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:5000/auth/logout", {
+      await fetch("http://localhost:5005/auth/logout", {
         method: "POST",
         credentials: "include",
       });

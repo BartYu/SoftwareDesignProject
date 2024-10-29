@@ -85,7 +85,7 @@ const Profile = () => {
     };
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/user/profile", {
+      const response = await fetch("http://localhost:5005/user/profile", {
         method: "PUT",
         credentials: "include",
         headers: {
