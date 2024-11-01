@@ -9,9 +9,9 @@ def setup_volunteer_history(client):
 @pytest.fixture
 def valid_event():
     return {
-        "eventName": "Community Cleanup Unique",  
+        "eventName": "Community Cleanup Unique",
         "eventDescription": "Cleaning up the local park.",
-        "location": "Central Park",
+        "location": "123 Main St, Springfield, IL, 62701",  # Updated location format
         "requiredSkills": "Teamwork, Communication",
         "urgency": "High",
         "eventDate": "2024-09-20",
@@ -21,9 +21,9 @@ def valid_event():
 @pytest.fixture
 def invalid_event():
     return {
-        "eventName": "",  
+        "eventName": "",
         "eventDescription": "Invalid event with no name.",
-        "location": "Unknown Location",
+        "location": "Unknown Location, Nowhere, ZZ, 00000",  # Updated location format
         "requiredSkills": "None",
         "urgency": "Medium",
         "eventDate": "2024-10-01",
@@ -43,7 +43,7 @@ def test_add_volunteer_event_success(client, valid_event):
 def test_add_volunteer_event_missing_field(client):
     event_missing_field = {
         "eventDescription": "Missing event name.",
-        "location": "Community Center",
+        "location": "456 Elm St, Downtown, NY, 12345",  # Updated location format
         "requiredSkills": "Organization",
         "urgency": "Medium",
         "eventDate": "2024-11-01",
@@ -69,7 +69,7 @@ def test_add_volunteer_event_success_with_valid_date(client):
     valid_event_with_future_date = {
         "eventName": "Community Cleanup Unique 2",
         "eventDescription": "Future cleaning event.",
-        "location": "Downtown Park",
+        "location": "789 Oak St, Metropolis, CA, 90210",  # Updated location format
         "requiredSkills": "Teamwork",
         "urgency": "High",
         "eventDate": "2025-12-31",
