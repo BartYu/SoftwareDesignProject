@@ -5,7 +5,6 @@ import './login.css';
 
 const Matching = () => {
     const [events, setEvents] = useState([]);
-    const [matches, setMatches] = useState({});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -15,6 +14,7 @@ const Matching = () => {
         try {
             const response = await fetch("http://localhost:5005/macho/matches", {
                 method: 'GET',
+                mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -32,13 +32,14 @@ const Matching = () => {
             setLoading(false);
         }
     };
-
+    
     const fetchMatchesForEvent = async (eventId) => {
         setLoading(true);
         setError(null); 
         try {
             const response = await fetch(`http://localhost:5005/macho/match/${eventId}`, {
                 method: 'POST',
+                mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -49,22 +50,50 @@ const Matching = () => {
             }
 
             const data = await response.json();
-            setMatches(prevMatches => ({
-                ...prevMatches,
-                [eventId]: data,
-            }));
+            setEvents(prevEvents => 
+                prevEvents.map(event => 
+                    event.id === eventId 
+                        ? { ...event, matched_volunteers: data } 
+                        : event
+                )
+            );
+
+            window.location.reload();
         } catch (error) {
             setError(error.message);
         } finally {
             setLoading(false);
         }
     };
+    
+    const handleDeleteMatch = async (eventId, volunteerId) => {
+        if (!window.confirm("Are you sure you want to delete this match?")) {
+            return;
+        }
 
-    const handleDeleteMatch = (eventId, matchIndex) => {
-        setMatches(prevMatches => ({
-            ...prevMatches,
-            [eventId]: prevMatches[eventId].filter((_, index) => index !== matchIndex),
-        }));
+        setLoading(true);
+        setError(null);
+        console.log(`Deleting match: Event ID ${eventId}, Volunteer ID ${volunteerId}`);
+
+        try {
+            const response = await fetch(`http://localhost:5005/macho/matches/${eventId}/${volunteerId}`, {
+                method: 'DELETE',
+                mode: "cors",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Error deleting match');
+            }
+
+            window.location.reload();
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -84,27 +113,27 @@ const Matching = () => {
                       {events.length > 0 ? (
                           events.map(event => (
                               <div key={event.id} className="event-container">
-                                  <h2>{event.title} ({event.date}) - Priority: {event.priority}</h2>
+                                  <h2 className="event-title">{event.title}</h2>
+                                  <h3 className="event-date">{event.date}</h3>
+                                  <span className="event-priority">Priority: {event.priority}</span>
                                   <button className="match-button" onClick={() => fetchMatchesForEvent(event.id)}>
                                       Match Volunteers
                                   </button>
-                                  {matches[event.id] && (
+                                  {event.matched_volunteers && event.matched_volunteers.length > 0 ? (
                                       <ul>
-                                          {matches[event.id].length > 0 ? (
-                                              matches[event.id].map((match, index) => (
-                                                  <li key={index}>
-                                                      <span className="match-info">
-                                                          Volunteer {match.volunteerName} matched with Event {match.eventTitle} on {match.date}
-                                                      </span>
-                                                      <button className="delete-button" onClick={() => handleDeleteMatch(event.id, index)}>
-                                                          Delete
-                                                      </button>
-                                                  </li>
-                                              ))
-                                          ) : (
-                                              <li>No volunteers matched yet.</li>
-                                          )}
+                                          {event.matched_volunteers.map((match, index) => (
+                                              <li key={index}>
+                                                  <span className="match-info">
+                                                      Volunteer {match[0]} matched with Event {event.title}
+                                                  </span>
+                                                  <button className="delete-button" onClick={() => handleDeleteMatch(event.id, match[1])}>
+                                                      Delete
+                                                  </button>
+                                              </li>
+                                          ))}
                                       </ul>
+                                  ) : (
+                                      <li>No volunteers matched yet.</li>
                                   )}
                               </div>
                           ))
@@ -115,8 +144,7 @@ const Matching = () => {
               )}
           </div>
       </div>
-  );
-  
+    );
 };
 
 export default Matching;
