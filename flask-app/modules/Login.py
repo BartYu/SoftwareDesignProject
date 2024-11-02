@@ -1,13 +1,8 @@
 from flask import Blueprint, request, jsonify, session
+from werkzeug.security import generate_password_hash, check_password_hash
 import re
 
 login_bp = Blueprint("login", __name__)
-
-# Simulating database
-users = {
-    "tuan@gmail.com": {"password": "123", "role": "admin"},
-    "barton@gmail.com": {"password": "123", "role": "volunteer"},
-}
 
 
 @login_bp.route("/register", methods=["POST"])
@@ -25,12 +20,28 @@ def register():
 
     if role not in ["admin", "volunteer"]:
         return jsonify({"error": "Invalid role."}), 400
+    
+    user_role = 1 if "admin" in role else 0
 
-    if email in users:
+    hashed_password = generate_password_hash(password)
+    
+    # Connect to MySQL
+    cursor = login_bp.mysql.connection.cursor()
+
+    # Check if email already exists
+    cursor.execute("SELECT * FROM credentials WHERE email = %s", (email,))
+    existing_user = cursor.fetchone()
+    if existing_user:
         return jsonify({"msg": "This email is already registered."}), 400
 
-    # To be implemented with database
-    users[email] = {"password": password, "role": role}
+    # Insert new user into the database
+    cursor.execute(
+        "INSERT INTO credentials (email, password, user_role) VALUES (%s, %s, %s)",
+        (email, hashed_password, user_role)
+    )
+    login_bp.mysql.connection.commit() 
+    cursor.close()
+ 
     return jsonify({"msg": "User registered successfully."}), 201
 
 
@@ -45,13 +56,19 @@ def login():
 
     if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
         return jsonify({"error": "Invalid email format."}), 400
+    
+    # Connect to MySQL
+    cursor = login_bp.mysql.connection.cursor()
 
-    if email in users and users[email]["password"] == password:
+    cursor.execute("SELECT password, user_role FROM credentials WHERE email = %s", (email,))
+    user = cursor.fetchone()
+    cursor.close()
+
+    if user and check_password_hash(user[0], password):
         session["user_id"] = email
         session.permanent = True
-        if "user_id" in session:
-            role = users[email]["role"]
-            return jsonify({"msg": "Login successful!", "role": role}), 200
+        role = "admin" if user[1] == 1 else "volunteer"
+        return jsonify({"msg": "Login successful!", "role": role}), 200
 
     return jsonify({"error": "Invalid credentials."}), 401
 

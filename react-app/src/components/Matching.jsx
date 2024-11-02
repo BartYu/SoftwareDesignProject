@@ -13,7 +13,7 @@ const Matching = () => {
         setLoading(true);
         setError(null); 
         try {
-            const response = await fetch("http://localhost:5000/macho/matches", {
+            const response = await fetch("http://localhost:5005/macho/matches", {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ const Matching = () => {
         setLoading(true);
         setError(null); 
         try {
-            const response = await fetch(`http://localhost:5000/macho/match/${eventId}`, {
+            const response = await fetch(`http://localhost:5005/macho/match/${eventId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

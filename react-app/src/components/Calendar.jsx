@@ -8,28 +8,28 @@ const daysInWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState([]);
-  const [availableEvents, setAvailableEvents] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedEventId, setSelectedEventId] = useState(null);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/calendar/events");
-        const data = await response.json();
-        setAvailableEvents(data);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-
     fetchEvents();
   }, []);
 
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch("http://localhost:5005/calendar/events");
+      const data = await response.json();
+      const normalizedEvents = data.map(event => ({
+        ...event,
+        date: new Date(event.date).toISOString(), 
+      }));
+      setEvents(normalizedEvents);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
   const getDaysInMonth = (month, year) =>
     new Date(year, month + 1, 0).getDate();
-  
+
   const getFirstDayOfMonth = (month, year) => new Date(year, month, 1).getDay();
 
   const changeMonth = (delta) => {
@@ -40,51 +40,29 @@ const Calendar = () => {
     });
   };
 
-  const handleDateClick = (day) => {
-    setSelectedDate(day);
-    setIsModalOpen(true);
-  };
-
-  const handleAddEvent = () => {
-    if (selectedEventId) {
-      const selectedEvent = availableEvents.find(
-        (event) => event.id === selectedEventId
-      );
-      if (selectedEvent) {
-        const formattedDate = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth(),
-          selectedDate
-        );
-
-        const eventExists = events.some(
-          (event) =>
-            event.title === selectedEvent.title &&
-            event.date.toDateString() === formattedDate.toDateString()
-        );
-
-        if (eventExists) {
-          alert("This event already exists on this date.");
-          return;
-        }
-
-        setEvents((prevEvents) => [
-          ...prevEvents,
-          { ...selectedEvent, date: formattedDate },
-        ]);
-        resetModal();
+  const handleDeleteEvent = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this event?");
+    
+    if (confirmDelete) {
+      setEvents((prevEvents) => prevEvents.filter(event => event.id !== id));
+  
+      try {
+        const response = await fetch(`http://localhost:5005/calendar/events/${id}`, {
+          method: "DELETE",
+          mode: "cors",
+        });
+  
+        if (!response.ok) {
+          fetchEvents(); 
+          console.error("Failed to delete event:", response.status, await response.json());
+        } 
+      } catch (error) {
+        console.error("Error deleting event:", error);
+        fetchEvents();
       }
     }
   };
-
-  const resetModal = () => {
-    setSelectedEventId(null);
-    setIsModalOpen(false);
-  };
-
-  const handleDeleteEvent = (id) => {
-    setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
-  };
+  
 
   const renderCalendar = () => {
     const month = currentDate.getMonth();
@@ -99,11 +77,11 @@ const Calendar = () => {
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
       const dayEvents = events.filter(
-        (event) => event.date.toDateString() === date.toDateString()
+        (event) => new Date(event.date).toUTCString().slice(0, 15) === date.toUTCString().slice(0, 15)
       );
 
       days.push(
-        <div className="day" key={day} onClick={() => handleDateClick(day)}>
+        <div className="day" key={day}>
           <div>{day}</div>
           {dayEvents.map((event) => (
             <div key={event.id} className="event">
@@ -115,13 +93,6 @@ const Calendar = () => {
     }
 
     return days;
-  };
-
-  const getAvailableEvents = () => {
-    const addedEventTitles = events.map((event) => event.title);
-    return availableEvents.filter(
-      (event) => !addedEventTitles.includes(event.title)
-    );
   };
 
   return (
@@ -148,48 +119,20 @@ const Calendar = () => {
         </div>
         <div className="days">{renderCalendar()}</div>
 
-        {isModalOpen && (
-          <div className="modal">
-            <div>
-              <h3>
-                Add Event for {selectedDate}{" "}
-                {currentDate.toLocaleString("default", { month: "long" })}
-              </h3>
-              <select
-                onChange={(e) => setSelectedEventId(Number(e.target.value))}
-                value={selectedEventId || ""}
-              >
-                <option value="" disabled>
-                  Select an event
-                </option>
-                {getAvailableEvents().map((event) => (
-                  <option key={event.id} value={event.id}>
-                    {event.title}
-                  </option>
-                ))}
-              </select>
-              <button onClick={handleAddEvent}>Add Event</button>
-              <button onClick={resetModal}>Cancel</button>
-            </div>
-          </div>
-        )}
-
         <div className="event-list">
           <h3>Events</h3>
           {events.length === 0 ? (
-            <p>No events added.</p>
+            <p>No events available.</p>
           ) : (
             events.map((event) => {
-              const date = event.date.toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              });
+              const eventDate = new Date(event.date);
+              
               return (
                 <div key={event.id} className="event-item">
                   <div className="event-details">
-                    <strong>{event.title}</strong> on {date}
+                    <strong>{event.title}</strong> on {eventDate.toLocaleDateString("en-US", { timeZone: "UTC" })}
+                    <div>Urgency: {event.priority}</div>
+                    <div>City: {event.city}</div>
                   </div>
                   <button
                     className="delete-button"
