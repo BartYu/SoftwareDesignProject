@@ -41,7 +41,7 @@ function VolunteerHistory() {
         <Helmet>
           <title>Volunteer History</title>
         </Helmet>
-        <h3>Your Volunteer History</h3>
+        <h3>Volunteer History</h3>
         {loading && <div>Loading...</div>}
         {error && <div className="error">{error}</div>}
         {!loading && !error && (
@@ -51,8 +51,6 @@ function VolunteerHistory() {
                 <th>Event Name</th>
                 <th>Description</th>
                 <th>Location</th>
-                <th>Skills Required</th>
-                <th>Urgency</th>
                 <th>Date</th>
                 <th>Status</th>
               </tr>
@@ -63,8 +61,6 @@ function VolunteerHistory() {
                   <td>{event.eventName}</td>
                   <td>{event.eventDescription}</td>
                   <td>{event.location}</td>
-                  <td>{event.requiredSkills}</td>
-                  <td>{event.urgency}</td>
                   <td>{event.eventDate}</td>
                   <td>{event.participationStatus}</td>
                 </tr>
