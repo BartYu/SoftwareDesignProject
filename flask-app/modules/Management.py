@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, current_app 
 from flask_marshmallow import Marshmallow
 from marshmallow import fields, ValidationError
 from datetime import datetime
@@ -73,17 +73,32 @@ class ManagementSchema(ma.Schema):
 management_schema = ManagementSchema()
 event_info = {}
 
-@management_bp.route("/management", methods=["GET", "POST"])
+@management_bp.route("/management", methods=["POST"])
 def management():
     user_id = session.get("user_id")
 
     if request.method == "POST":
         try:
             data = management_schema.load(request.json)
+            cur = management_bp.mysql.connection.cursor()
+            cur.execute("""
+            INSERT INTO event (event_name, event_description, event_location, event_skill, event_urgency, event_date)    
+            VALUES (%s, %s, %s, %s, %s, %s)
+            """, [
+               data.get("name"), 
+               data.get("description"), 
+               data.get("location"), 
+               data.get("skills"),
+               data.get("urgency"),
+               data.get("date")
+            ]
+            )
+            management_bp.mysql.connection.commit()
+            cur.close()
+
         except ValidationError as error:
             return jsonify({"errors": error.messages}), 400
 
-        # To be sent to database
         event_info[user_id] = {
             "name": data.get("name"),
             "description": data.get("description"),
@@ -92,10 +107,5 @@ def management():
             "urgency": data.get("urgency"),
             "date": data.get("date"),
         }
-        return jsonify({"msg": "Event saved successfully!"}), 200
 
-    if request.method == "GET":
-        management_info = event_info.get(user_id)
-        if management_info:
-            return jsonify(management_info), 200
-        return jsonify({"msg": "Event not found."}), 404
+        return jsonify({"msg": "Event saved successfully!"}), 200
