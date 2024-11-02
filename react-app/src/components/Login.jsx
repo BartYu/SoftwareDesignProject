@@ -51,8 +51,13 @@ function Login() {
           return;
         }
         const { role } = responseData;
+        // console.log("Role is", role);
         login(role);
-        navigate("/profile");
+        if (role == "admin") {
+          navigate("/management");
+        } else {
+          navigate("/profile");
+        }
       } catch (error) {
         setEmailError("An error occurred. Please try again.");
       } finally {

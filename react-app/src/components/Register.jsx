@@ -40,7 +40,7 @@ function Register() {
     if (!hasError) {
       setLoading(true);
       try {
-        const response = await fetch("http://localhost:5000/auth/register", {
+        const response = await fetch("http://localhost:5005/auth/register", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -57,6 +57,7 @@ function Register() {
         navigate("/");
       } catch (err) {
         setEmailError("An error occurred. Please try again.");
+        // console.error("Error:", err);
       } finally {
         setLoading(false);
       }
@@ -108,7 +109,7 @@ function Register() {
           <label htmlFor="role">Role</label>
           <select
             id="role"
-            value={role.toLowerCase}
+            value={role.toLowerCase()}
             onChange={(e) => {
               setRole(e.target.value);
               if (e.target.value) setRoleError("");

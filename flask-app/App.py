@@ -3,16 +3,19 @@ from flask_cors import CORS
 from modules import register_routes
 from datetime import timedelta
 from flask_mysqldb import MySQL
+from dotenv import load_dotenv
+import os
 
 def create_app():
     app = Flask(__name__)
-    app.secret_key = "gnaohnautcosc"
+    load_dotenv()
+    app.secret_key = os.getenv("SECRET_KEY")
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=1)
     
-    app.config['MYSQL_HOST'] = 'localhost'
-    app.config['MYSQL_USER'] = 'root'  # replace w/ ur data
-    app.config['MYSQL_PASSWORD'] = 'Team4-3380:'  # replace w/ ur data
-    app.config['MYSQL_DB'] = 'software_volunteering'  # replace w/ ur database name 
+    app.config['MYSQL_HOST'] = os.getenv("MYSQL_HOST")
+    app.config['MYSQL_USER'] = os.getenv("MYSQL_USER")
+    app.config['MYSQL_PASSWORD'] = os.getenv("MYSQL_PASSWORD")
+    app.config['MYSQL_DB'] = os.getenv("MYSQL_DB")
 
     mysql = MySQL(app)
     

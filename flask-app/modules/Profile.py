@@ -5,6 +5,7 @@ from datetime import datetime
 from .Auth import login_required
 import re
 import App
+import json
 
 profile_bp = Blueprint("profile", __name__)
 
@@ -51,7 +52,7 @@ class ProfileSchema(ma.Schema):
     )
     state = fields.String(
         required=True,
-        validate=lambda s: len(s) == 2,
+        validate=lambda s: len(s) < 20,
         error_messages={
             "validator_failed": "Select your State.",
         },
@@ -84,14 +85,23 @@ class ProfileSchema(ma.Schema):
 
 
 profile_schema = ProfileSchema()
-user_profile = {}
 
 
 @profile_bp.route("/profile", methods=["GET", "PUT"])
 @login_required
 def profile():
-    user_id = session.get("user_id")
-    # print("Profile session:", session.get("user_id"))
+    email = session.get("user_id")
+        
+    cursor = profile_bp.mysql.connection.cursor()
+        
+    # Find user_id from credentials table
+    cursor.execute("SELECT user_id FROM credentials WHERE email = %s", (email,))
+    user_result = cursor.fetchone()
+
+    if not user_result:
+        return jsonify({"msg": "User not found."}), 404
+    user_id = user_result[0]
+
 
     if request.method == "PUT":
         # print("Request JSON:", request.json)
@@ -100,23 +110,96 @@ def profile():
         except ValidationError as error:
             return jsonify({"errors": error.messages}), 400
 
-        # To be sent to database
-        user_profile[user_id] = {
-            "name": data.get("name"),
-            "address1": data.get("address1"),
-            "address2": data.get("address2"),
-            "city": data.get("city"),
-            "state": data.get("state"),
-            "zipcode": data.get("zipcode"),
-            "skills": data.get("skills"),
-            "preferences": data.get("preferences"),
-            "dates": sorted(data.get("dates", [])),
-        }
+        # Connect to database 
+        cursor = profile_bp.mysql.connection.cursor()
+        print("Data", data)
+
+         # Fetch state ID based on the provided state name
+        state_name = data.get("state")
+        cursor.execute("SELECT state_id FROM state WHERE state_name = %s", (state_name,))
+        state_result = cursor.fetchone()
+        
+        state_id = state_result[0]
+        # print("state id", state_id)
+
+        # Convert to JSON for backend
+        # Convert `availability` (dates list) to JSON string
+        availability_dates = data.get("dates")
+        availability_json = json.dumps([date.strftime("%Y-%m-%d") for date in availability_dates])
+        skills_json = json.dumps(data.get("skills"))
+        
+        cursor.execute("""
+            INSERT INTO volunteer (volunteer_id, volunteer_full_name, volunteer_address_1, volunteer_address_2,
+                           volunteer_city, volunteer_state, volunteer_zip_code,
+                           volunteer_preferences, volunteer_availability, volunteer_skills)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+                volunteer_id = VALUES(volunteer_id),
+                volunteer_full_name = VALUES(volunteer_full_name),
+                volunteer_address_1 = VALUES(volunteer_address_1),
+                volunteer_address_2 = VALUES(volunteer_address_2),
+                volunteer_city = VALUES(volunteer_city),
+                volunteer_state = VALUES(volunteer_state),
+                volunteer_zip_code = VALUES(volunteer_zip_code),
+                volunteer_preferences = VALUES(volunteer_preferences),
+                volunteer_availability = VALUES(volunteer_availability),
+                volunteer_skills = VALUES(volunteer_skills)
+        """, (
+            user_id,
+            data.get("name"),
+            data.get("address1"),
+            data.get("address2"),
+            data.get("city"),
+            state_id,
+            data.get("zipcode"),
+            data.get("preferences"),
+            availability_json,
+            skills_json,
+        ))
+        
+        profile_bp.mysql.connection.commit()
+        cursor.close()
+        
         return jsonify({"msg": "Profile saved successfully!"}), 200
 
     if request.method == "GET":
-        profile_info = user_profile.get(user_id)
-        print("Profile:", profile_info)
-        if profile_info:
-            return jsonify(profile_info), 200
-        return jsonify({"msg": "Profile not found."}), 404
+        cursor.execute("""
+            SELECT volunteer_full_name, volunteer_address_1, volunteer_address_2, volunteer_city,
+                   volunteer_state, volunteer_zip_code, volunteer_preferences, volunteer_availability, 
+                   volunteer_skills
+            FROM volunteer
+            WHERE volunteer_id = %s
+        """, (user_id,))
+
+        profile = cursor.fetchone()
+        print("Backend:", profile)
+
+        if not profile:
+            cursor.close()
+            return jsonify({"msg": "Profile not found."}), 404
+        
+        # Convert the state id back to the state name
+        state_id = profile[4]
+        cursor.execute("SELECT state_name FROM state WHERE state_id = %s", (state_id,))
+        state_result = cursor.fetchone()
+
+        if state_result:
+            state_name = state_result[0]
+        else:
+            state_name = None
+        cursor.close()
+
+        profile_info = {
+            "name": profile[0],         
+            "address1": profile[1],     
+            "address2": profile[2],     
+            "city": profile[3],        
+            "state": state_name,        
+            "zipcode": profile[5],
+            "preferences": profile[6],
+            # Convert JSON string to dict 
+            "dates": json.loads(profile[7]) if profile[7] else {},        
+            "skills": json.loads(profile[8]) if profile[8] else {}, 
+        }
+
+        return jsonify(profile_info), 200

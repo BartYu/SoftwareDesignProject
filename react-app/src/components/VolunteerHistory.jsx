@@ -1,7 +1,7 @@
 import "./VolunteerHistory.css"; // Import your CSS file
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import NavBar from "./NavBar"; // Import the NavBar component
+import NavBar from "./Navbar"; // Import the NavBar component
 
 function VolunteerHistory() {
   const [history, setHistory] = useState([]);
@@ -12,10 +12,13 @@ function VolunteerHistory() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const response = await fetch("http://localhost:5005/volunteer-history", {
-          method: "GET",
-          credentials: "include",
-        });
+        const response = await fetch(
+          "http://localhost:5005/volunteer-history",
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
 
         if (!response.ok) throw new Error("Failed to fetch history");
 
