@@ -4,6 +4,7 @@ from marshmallow import fields, ValidationError
 from datetime import datetime
 from .Auth import login_required
 import App
+import json
 
 management_bp = Blueprint("management", __name__)
 ma = Marshmallow(App)
@@ -39,11 +40,35 @@ class ManagementSchema(ma.Schema):
         },
     )
 
-    location = fields.String(
+    address = fields.String(
         required=True,
         validate=lambda s: 1 <= len(s) <= 500,
         error_messages={
-            "validator_failed": "Event description must be between 1 - 500 characters.",
+            "validator_failed": "Address must be between 1 - 500 characters.",
+        },
+    )
+
+    city = fields.String(
+        required=True,
+        validate=lambda s: 1 <= len(s) <= 100,
+        error_messages={
+            "validator_failed": "City must be between 1 - 100 characters.",
+        },
+    )
+
+    state = fields.String(
+        required=True,
+        validate=lambda s: 1 <= len(s) <= 100,
+        error_messages={
+            "validator_failed": "State must be between 1 - 100 characters.",
+        },
+    )
+
+    zipcode = fields.String(
+        required=True,
+        validate=lambda s: 1 <= len(s) <= 20,
+        error_messages={
+            "validator_failed": "Zipcode must be between 1 - 20 characters.",
         },
     )
 
@@ -63,8 +88,10 @@ class ManagementSchema(ma.Schema):
         },
     )
 
-    date = fields.Number(
+    date = fields.List(
+        datesFormat(),
         required=True,
+        validate=lambda s: len(s) > 0,
         error_messages={
             "validator_failed": "Select at least a date.",
         },
@@ -80,32 +107,48 @@ def management():
     if request.method == "POST":
         try:
             data = management_schema.load(request.json)
-            cur = management_bp.mysql.connection.cursor()
-            cur.execute("""
-            INSERT INTO event (event_name, event_description, event_location, event_skill, event_urgency, event_date)    
-            VALUES (%s, %s, %s, %s, %s, %s)
+            print("Event data", data)
+            
+            urgency_name = data.get("urgency")
+            
+            cursor = management_bp.mysql.connection.cursor()
+            cursor.execute("""
+                SELECT urgency_id FROM urgency WHERE urgency_name = %s
+            """, [urgency_name])
+            urgency_result = cursor.fetchone()
+            
+            if not urgency_result:
+                return jsonify({"error": "Invalid urgency name"}), 400
+            
+            state_name = data.get("state")
+            cursor.execute("SELECT state_id FROM state WHERE state_name = %s", (state_name,))
+            state_result = cursor.fetchone()
+            
+            state_id = state_result[0]
+            urgency_id = urgency_result[0]
+            event_skills = json.dumps(data.get("skills"))
+            event_date_list = data.get("date")
+            event_date = event_date_list[0] if event_date_list else None
+            
+            cursor.execute("""
+                INSERT INTO event (event_name, event_description, event_address, event_city, event_state, 
+                                   event_zipcode, event_skills, event_urgency, event_date)    
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, [
                data.get("name"), 
                data.get("description"), 
-               data.get("location"), 
-               data.get("skills"),
-               data.get("urgency"),
-               data.get("date")
-            ]
-            )
+               data.get("address"),
+               data.get("city"),
+               state_id,
+               data.get("zipcode"),
+               event_skills,
+               urgency_id,
+               event_date
+            ])
             management_bp.mysql.connection.commit()
-            cur.close()
+            cursor.close()
 
         except ValidationError as error:
             return jsonify({"errors": error.messages}), 400
 
-        event_info[user_id] = {
-            "name": data.get("name"),
-            "description": data.get("description"),
-            "location": data.get("location"),
-            "skills": data.get("skills"),
-            "urgency": data.get("urgency"),
-            "date": data.get("date"),
-        }
-
-        return jsonify({"msg": "Event saved successfully!"}), 200
+        return jsonify({"msg": "Event created successfully!"}), 200

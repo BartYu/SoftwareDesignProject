@@ -4,37 +4,27 @@ import DatePicker from "react-multi-date-picker";
 import Select from "react-select";
 import Navbar from "./Navbar";
 import { Helmet } from "react-helmet";
-
-const REQUIRED_SKILLS_LIST = [
-  { value: "Adaptive", label: "Adaptive" },
-  { value: "Creative", label: "Creative" },
-  { value: "Problem-Solving", label: "Problem-Solving" },
-  { value: "Patience", label: "Patience" },
-  { value: "Teamwork", label: "Teamwork" },
-  { value: "Compassion", label: "Compassion" },
-  { value: "Communication", label: "Communication" },
-  { value: "Leadership", label: "Leadership" },
-];
-
-const URGENCY_OPTIONS = [
-  { value: "High", label: "High" },
-  { value: "Medium", label: "Medium" },
-  { value: "Low", label: "Low" },
-];
+import { usStates, skillOptions } from "./profile-info";
 
 const Management = () => {
   const [eventName, setEventName] = useState("");
   const [eventDescription, setEventDescription] = useState("");
-  const [location, setLocation] = useState("");
+  const [address, setAddress] = useState("");
+  const [zipcode, setZipcode] = useState("");
+  const [city, setCity] = useState("");
+  const [selectedState, setSelectedState] = useState("");
   const [requiredSkills, setRequiredSkills] = useState([]);
   const [urgency, setUrgency] = useState("");
-  const [eventDate, setEventDate] = useState("");
+  const [eventDate, setEventDate] = useState([]);
 
   const [eventNameError, setEventNameError] = useState("");
   const [eventDescriptionError, setEventDescriptionError] = useState("");
-  const [locationError, setLocationError] = useState("");
-  const [requiredSkillsError, setRequiredSkillsError] = useState([]);
-  const [urgencyError, setUrgencyError] = useState([]);
+  const [addressError, setAddressError] = useState("");
+  const [zipcodeError, setZipcodeError] = useState("");
+  const [cityError, setCityError] = useState("");
+  const [stateError, setStateError] = useState("");
+  const [requiredSkillsError, setRequiredSkillsError] = useState("");
+  const [urgencyError, setUrgencyError] = useState("");
   const [eventDateError, setEventDateError] = useState("");
 
   const handleSubmission = async (event) => {
@@ -50,11 +40,22 @@ const Management = () => {
       setEventDescriptionError("Please enter your event description.");
       hasError = true;
     }
-    if (location === "") {
-      setLocationError("Please enter the event location.");
+    if (address === "") {
+      setAddressError("Please enter the event address.");
       hasError = true;
     }
-
+    if (zipcode === "") {
+      setZipcodeError("Please enter the zipcode.");
+      hasError = true;
+    }
+    if (city === "") {
+      setCityError("Please enter the city.");
+      hasError = true;
+    }
+    if (selectedState === "") {
+      setStateError("Please enter the state.");
+      hasError = true;
+    }
     if (requiredSkills.length === 0) {
       setRequiredSkillsError("Please select at least one skill.");
       hasError = true;
@@ -67,23 +68,28 @@ const Management = () => {
       setEventDateError("Please select a date for the event.");
       hasError = true;
     }
+    console.log("Event date", eventDate);
 
     if (!hasError) {
       // Proceed with form submission logic
       const eventData = {
         name: eventName,
         description: eventDescription,
-        location: location,
+        address: address,
+        zipcode: zipcode,
+        city: city,
+        state: selectedState,
         skills: requiredSkills.map((skill) => skill.value),
-        urgency: urgency?.value,
+        urgency: urgency,
         date:
           eventDate instanceof Date
             ? eventDate.toLocaleDateString("en-US")
             : eventDate,
       };
+      console.log("Event:", eventData.urgency);
 
       try {
-        const response = await fetch("http://localhost:5000/event/management", {
+        const response = await fetch("http://localhost:5005/event/management", {
           method: "POST",
           credentials: "include",
           headers: {
@@ -100,10 +106,10 @@ const Management = () => {
       } catch (error) {
         console.error("Error adding management info.", error);
       }
-  } else {
-    return;
-  }  
-};
+    } else {
+      return;
+    }
+  };
 
   return (
     <div className="dashboard">
@@ -136,6 +142,29 @@ const Management = () => {
             )}
           </div>
 
+          {/* Urgency Selection */}
+          <div className="col-md-6">
+            <label htmlFor="urgency" className="form-label">
+              Urgency *
+            </label>
+            <select
+              id="urgency"
+              value={urgency}
+              onChange={(e) => setUrgency(e.target.value)}
+              className={`form-select ${urgencyError ? "is-invalid" : ""}`}
+            >
+              <option value="" disabled hidden>
+                select urgency
+              </option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+            {urgencyError && (
+              <div className="invalid-feedback">{urgencyError}</div>
+            )}
+          </div>
+
           {/* Event Description */}
           <div className="col-md-12">
             <label htmlFor="description" className="form-label">
@@ -155,21 +184,77 @@ const Management = () => {
             )}
           </div>
 
-          {/* Event Location */}
+          {/* Event Address */}
           <div className="col-md-12">
-            <label htmlFor="location" className="form-label">
-              Event Location *
+            <label htmlFor="address" className="form-label">
+              Event Address *
             </label>
-            <textarea
-              className={`form-control ${locationError ? "is-invalid" : ""}`}
-              id="location"
-              rows="3"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            ></textarea>
-            {locationError && (
-              <div className="invalid-feedback">{locationError}</div>
+            <input
+              className={`form-control ${addressError ? "is-invalid" : ""}`}
+              id="address"
+              rows="2"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+            {addressError && (
+              <div className="invalid-feedback">{addressError}</div>
             )}
+          </div>
+
+          {/* Zipcode */}
+          <div className="col-md-6">
+            <label htmlFor="zipcode" className="form-label">
+              Zipcode *
+            </label>
+            <input
+              type="text"
+              id="zipcode"
+              value={zipcode}
+              onChange={(e) => setZipcode(e.target.value)}
+              className={`form-control ${zipcodeError ? "is-invalid" : ""}`}
+            />
+            {zipcodeError && (
+              <div className="invalid-feedback">{zipcodeError}</div>
+            )}
+          </div>
+
+          {/* City */}
+          <div className="col-md-6">
+            <label htmlFor="city" className="form-label">
+              City *
+            </label>
+            <input
+              type="text"
+              id="city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className={`form-control ${cityError ? "is-invalid" : ""}`}
+            />
+            {cityError && <div className="invalid-feedback">{cityError}</div>}
+          </div>
+
+          {/* State */}
+          <div className="col-md-3">
+            <label htmlFor="state" className="form-label">
+              State *
+            </label>
+            <select
+              id="state"
+              value={selectedState}
+              onChange={(e) => {
+                setSelectedState(e.target.value);
+                if (stateError) setStateError(null);
+              }}
+              className={`form-select ${stateError ? "is-invalid" : ""}`}
+            >
+              <option disabled value=""></option>
+              {usStates.map((state) => (
+                <option key={state.abbreviation} value={state.abbreviation}>
+                  {state.name}
+                </option>
+              ))}
+            </select>
+            {stateError && <div className="invalid-feedback">{stateError}</div>}
           </div>
 
           {/* Skills Selection */}
@@ -179,7 +264,7 @@ const Management = () => {
             </label>
             <Select
               id="skills"
-              options={REQUIRED_SKILLS_LIST}
+              options={skillOptions}
               value={requiredSkills}
               isMulti
               onChange={(selectedOptions) =>
@@ -192,31 +277,17 @@ const Management = () => {
             )}
           </div>
 
-          {/* urgency Selection */}
-          <div className="col-md-6">
-            <label htmlFor="urgency" className="form-label">
-              Urgency *
-            </label>
-            <Select
-              id="urgency"
-              options={URGENCY_OPTIONS}
-              value={urgency}
-              onChange={(selectedOption) => {
-                return setUrgency(selectedOption);
-              }}
-              className={urgencyError ? "is-invalid" : ""}
-            />
-            {urgencyError && (
-              <div className="invalid-feedback">{urgencyError}</div>
-            )}
-          </div>
-
           {/* Date Selection */}
           <div className="col-md-6">
             <label htmlFor="date" className="form-label">
               Event Date: *
             </label>
-            <DatePicker id="date" value={eventDate} onChange={setEventDate} format={"MM/DD/YYYY"}/>
+            <DatePicker
+              id="date"
+              value={eventDate}
+              onChange={setEventDate}
+              format={"MM/DD/YYYY"}
+            />
             {eventDateError && (
               <div className="error-message">{eventDateError}</div>
             )}
