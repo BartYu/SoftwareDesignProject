@@ -17,6 +17,7 @@ def create_app():
     app.config['MYSQL_PASSWORD'] = os.getenv("MYSQL_PASSWORD")
     app.config['MYSQL_DB'] = os.getenv("MYSQL_DB")
 
+    
     mysql = MySQL(app)
     
     CORS(app, supports_credentials=True)

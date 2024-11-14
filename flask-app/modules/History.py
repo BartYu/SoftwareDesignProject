@@ -35,7 +35,7 @@ def get_volunteer_history():
             e.event_city, 
             s.state_name, 
             e.event_zipcode, 
-            e.event_date,
+            e.event_date
         FROM 
             event e
         JOIN 
@@ -51,10 +51,12 @@ def get_volunteer_history():
             "eventName": event[0],
             "eventDescription": event[1],
             "location": f"{event[2]}, {event[3]}, {event[4]}, {event[5]}",
-            "eventDate": event[6].strftime('%m-%d-%y'), 
+            "eventDate": event[6].strftime('%m/%d/%y'), 
             "participationStatus": "Completed",  
         }
         for event in finished_events
     ]
 
     return jsonify(serialized_events)
+
+

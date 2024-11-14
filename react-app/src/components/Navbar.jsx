@@ -14,9 +14,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5005/notification/notif_events"
-        );
+        const response = await fetch("http://localhost:5005/notification/notif_events");
         const data = await response.json();
         setNotifications(data);
         setHasNotifications(data.length > 0);
@@ -53,7 +51,7 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="nav d-flex justify-content-center w-100">
             {/* Profile page is unavailable for admins */}
-            {userRole == "volunteer" && (
+            {userRole === "volunteer" && (
               <li className="nav-item">
                 <a
                   className={`nav-link ${isActive("/profile") ? "active" : ""}`}
@@ -65,12 +63,10 @@ const Navbar = () => {
               </li>
             )}
             {/* Management page unavailable for Volunteers */}
-            {userRole == "admin" && (
+            {userRole === "admin" && (
               <li className="nav-item">
                 <a
-                  className={`nav-link ${
-                    isActive("/management") ? "active" : ""
-                  }`}
+                  className={`nav-link ${isActive("/management") ? "active" : ""}`}
                   aria-current="page"
                   onClick={() => navigate("/management")}
                 >
@@ -89,12 +85,10 @@ const Navbar = () => {
               </a>
             </li>
             {/* Matching page unavailable for Volunteers */}
-            {userRole == "admin" && (
+            {userRole === "admin" && (
               <li className="nav-item">
                 <a
-                  className={`nav-link ${
-                    isActive("/matching") ? "active" : ""
-                  }`}
+                  className={`nav-link ${isActive("/matching") ? "active" : ""}`}
                   aria-current="page"
                   onClick={() => navigate("/matching")}
                 >
@@ -134,7 +128,7 @@ const Navbar = () => {
                 {notifications.map((notification) => (
                   <li key={notification.id}>
                     <a className="dropdown-item" href="#">
-                      {notification.title}
+                      {notification.title} - {notification.date}
                     </a>
                   </li>
                 ))}
