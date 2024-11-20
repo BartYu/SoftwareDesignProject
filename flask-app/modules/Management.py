@@ -9,9 +9,8 @@ import json
 management_bp = Blueprint("management", __name__)
 ma = Marshmallow(App)
 
-class datesFormat(fields.Date):
+class DateFormat(fields.Date):
     def _deserialize(self, value, attr, data, **kwargs):
-        # print("Dates received: ", value)
         try:
             if isinstance(value, int):
                 timestamp = value / 1000
@@ -88,10 +87,9 @@ class ManagementSchema(ma.Schema):
         },
     )
 
-    date = fields.List(
-        datesFormat(),
+    # Change this to a single date field (not a list)
+    date = DateFormat(
         required=True,
-        validate=lambda s: len(s) > 0,
         error_messages={
             "validator_failed": "Select at least a date.",
         },
@@ -127,8 +125,7 @@ def management():
             state_id = state_result[0]
             urgency_id = urgency_result[0]
             event_skills = json.dumps(data.get("skills"))
-            event_date_list = data.get("date")
-            event_date = event_date_list[0] if event_date_list else None
+            event_date = data.get("date")  # Now it's a single date
             
             cursor.execute("""
                 INSERT INTO event (event_name, event_description, event_address, event_city, event_state, 
