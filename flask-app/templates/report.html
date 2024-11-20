@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Generate Report</h1>
+        <form action="{{ url_for('report.generate_report') }}" method="POST">
+            <div class="mb-3">
+                <label for="report_type" class="form-label">Select Report Type</label>
+                <select id="report_type" name="report_type" class="form-select">
+                    <option value="volunteers">Volunteer Report</option>
+                    <option value="events">Event Report</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="format" class="form-label">Select Report Format</label>
+                <select id="format" name="format" class="form-select">
+                    <option value="csv">CSV</option>
+                    <option value="pdf">PDF</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Generate Report</button>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

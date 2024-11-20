@@ -1,0 +1,95 @@
+.report-container {
+    font-family: "Open Sans", sans-serif;
+    width: 60%;
+    margin: 40px auto;
+    padding: 60px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgb(211, 223, 233);
+  }
+  
+  .report-container h1 {
+    text-align: center;
+    font-weight: bold;
+    color: darkcyan;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    margin-bottom: 40px;
+  }
+  
+  .report-form {
+    margin-top: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  select, button {
+    width: 100%;
+    height: 40px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
+  
+  .error-message {
+    color: rgb(211, 23, 23);
+    font-size: 14.5px;
+    margin-top: 6px;
+    font-weight: bold;
+  }
+  
+
+  .submit-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .submit-btn:hover {
+    background-color: #218838;
+  }
+  
+  .submit-btn:disabled {
+    background-color: #6c757d;
+  }
+  
+
+  .saveButton .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .clear-dates {
+    height: 35px;
+    margin-left: 8px;
+  }
+  
+  .dates-container .rmdp-input {
+    width: 100%;
+    height: 35px;
+  }
+  

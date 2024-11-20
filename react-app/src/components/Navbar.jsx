@@ -75,6 +75,18 @@ const Navbar = () => {
                 </a>
               </li>
             )}
+            {userRole === "admin" && (
+              <li className="nav-item">
+                <a
+                  className={`nav-link ${isActive("/report") ? "active" : ""}`}
+                  aria-current="page"
+                  onClick={() => navigate("/report")}
+                >
+                  <span>Report</span>
+                  <span>Generator</span>
+                </a>
+              </li>
+            )}
             <li className="nav-item">
               <a
                 className={`nav-link ${isActive("/calendar") ? "active" : ""}`}
