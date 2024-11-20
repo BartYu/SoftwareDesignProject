@@ -103,6 +103,8 @@ const Management = () => {
           console.error("Error from backend:", responseData);
           return;
         }
+        window.location.reload();
+        alert("Event created");
       } catch (error) {
         console.error("Error adding management info.", error);
       }
@@ -293,7 +295,7 @@ const Management = () => {
             )}
           </div>
 
-          <div className="col-12">
+          <div className="col-12 create-event">
             <button type="submit" className="btn btn-primary">
               Create event
             </button>

@@ -14,7 +14,9 @@ const Navbar = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch("http://localhost:5005/notification/notif_events");
+        const response = await fetch(
+          "http://localhost:5005/notification/notif_events"
+        );
         const data = await response.json();
         setNotifications(data);
         setHasNotifications(data.length > 0);
@@ -66,7 +68,9 @@ const Navbar = () => {
             {userRole === "admin" && (
               <li className="nav-item">
                 <a
-                  className={`nav-link ${isActive("/management") ? "active" : ""}`}
+                  className={`nav-link ${
+                    isActive("/management") ? "active" : ""
+                  }`}
                   aria-current="page"
                   onClick={() => navigate("/management")}
                 >
@@ -100,7 +104,9 @@ const Navbar = () => {
             {userRole === "admin" && (
               <li className="nav-item">
                 <a
-                  className={`nav-link ${isActive("/matching") ? "active" : ""}`}
+                  className={`nav-link ${
+                    isActive("/matching") ? "active" : ""
+                  }`}
                   aria-current="page"
                   onClick={() => navigate("/matching")}
                 >
@@ -139,9 +145,9 @@ const Navbar = () => {
               <ul className="dropdown-menu dropdown-menu-end show">
                 {notifications.map((notification) => (
                   <li key={notification.id}>
-                    <a className="dropdown-item" href="#">
+                    <span className="dropdown-item">
                       {notification.title} - {notification.date}
-                    </a>
+                    </span>
                   </li>
                 ))}
               </ul>

@@ -29,3 +29,17 @@
   color: rgb(211, 23, 23);
   font-size: 14.5px;
 }
+
+.create-event {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+}
+
+.create-event .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20%;
+}

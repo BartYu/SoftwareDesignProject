@@ -1,149 +1,154 @@
 .calendar {
-    width: 90vw;  
-    margin: 20px auto;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    background-color: white; 
+  width: 90vw;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px; 
-    background-color: #4CAF50;
-    color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #4caf50;
+  color: white;
 }
 
 .header button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 20px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  width: 80px;
 }
 
 .days-of-week {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    background-color: #f0f0f0;
-    font-size: 18px; 
-    color: #333; 
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: #f0f0f0;
+  font-size: 18px;
+  color: #333;
 }
 
 .days-of-week .day {
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    background-color: #f0f0f0; 
-    cursor: default; 
-    font-weight: bold;
-    padding: 10px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+  cursor: default;
+  font-weight: bold;
+  padding: 10px;
 }
 
 .days-of-week .day:hover {
-    background-color: #f0f0f0; 
+  background-color: #f0f0f0;
 }
 
 .day {
-    position: relative; 
-    padding: 10px; 
-    height: 100px;  
-    text-align: left; 
-    border: 1px solid #eee;
-    cursor: pointer; 
-    font-size: 20px; 
-    font-weight: normal; 
-    color: #555; 
-    overflow-y: auto; 
+  position: relative;
+  padding: 10px;
+  height: 100px;
+  text-align: left;
+  border: 1px solid #eee;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: normal;
+  color: #555;
+  overflow-y: auto;
 }
 
 .empty {
-    background-color: #f9f9f9;
+  background-color: #f9f9f9;
 }
 
 .days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
 }
 
 .day:hover {
-    background-color: #e0f7fa; 
+  background-color: #e0f7fa;
 }
 
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5); 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
 .modal > div {
-    background: rgba(255, 255, 255, 0.9); 
-    padding: 20px;
-    border-radius: 12px; 
-    text-align: center;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
-    width: 400px; 
-    max-width: 90%; 
-    margin: 20px; 
-    backdrop-filter: blur(10px);
-    max-height: 80vh; 
-    overflow-y: auto; 
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  max-width: 90%;
+  margin: 20px;
+  backdrop-filter: blur(10px);
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .event-list {
-    margin-top: 20px;
-    padding: 10px;
-    border-top: 1px solid #ccc;
-    background-color: white; 
+  margin-top: 20px;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  background-color: white;
 }
 
 .event-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #ffffff; 
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .event-details {
-    font-size: 16px;
-    color: #333;
+  font-size: 20px;
+  color: #333;
+  display: flex;
+  gap: 40px;
 }
 
 .delete-button {
-    background-color: #f44336; 
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  height: 60px;
+  width: 120px;
 }
 
 .delete-button:hover {
-    background-color: #d32f2f; 
+  background-color: #d32f2f;
 }
 
 .event {
-    background-color: #e0f7fa; 
-    border-radius: 4px;
-    padding: 5px;
-    margin-top: 5px;
-    font-size: 14px; 
-    text-overflow: ellipsis; 
-    white-space: nowrap; 
+  background-color: #e0f7fa;
+  border-radius: 4px;
+  padding: 5px;
+  margin-top: 5px;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
