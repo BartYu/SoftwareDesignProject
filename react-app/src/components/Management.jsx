@@ -15,7 +15,7 @@ const Management = () => {
   const [selectedState, setSelectedState] = useState("");
   const [requiredSkills, setRequiredSkills] = useState([]);
   const [urgency, setUrgency] = useState("");
-  const [eventDate, setEventDate] = useState([]);
+  const [eventDate, setEventDate] = useState(null);
 
   const [eventNameError, setEventNameError] = useState("");
   const [eventDescriptionError, setEventDescriptionError] = useState("");
@@ -285,8 +285,9 @@ const Management = () => {
             <DatePicker
               id="date"
               value={eventDate}
-              onChange={setEventDate}
+              onChange={(date) => setEventDate(date)}
               format={"MM/DD/YYYY"}
+              multiple={false}
             />
             {eventDateError && (
               <div className="error-message">{eventDateError}</div>
