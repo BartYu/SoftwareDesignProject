@@ -89,7 +89,7 @@ def generate_pdf(data, report_type):
     pdf.add_page()
 
     pdf.set_font("Arial", size=16, style='B')
-    pdf.cell(200, 10, txt=f"{report_type.replace('_', ' ').title()} Report", ln=True, align="C")
+    pdf.cell(200, 10, txt=f"{report_type.replace('_', ' ').title()}", ln=True, align="C")
     pdf.ln(10)
 
     pdf.set_font("Arial", size=12)
