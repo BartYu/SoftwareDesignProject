@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import "./calendar.css";
 import Navbar from "./Navbar";
 import { Helmet } from "react-helmet";
+import { useAuth } from "./AuthContext";
 
 const daysInWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState([]);
+  const { userRole } = useAuth();
 
   useEffect(() => {
     fetchEvents();
@@ -134,12 +136,14 @@ const Calendar = () => {
                     <div>Urgency: {event.priority}</div>
                     <div>City: {event.city}</div>
                   </div>
+                  {userRole === "admin" &&(
                   <button
                     className="delete-button"
                     onClick={() => handleDeleteEvent(event.id)}
                   >
                     Delete
                   </button>
+                )}
                 </div>
               );
             })
